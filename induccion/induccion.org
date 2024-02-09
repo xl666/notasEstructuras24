@@ -7,7 +7,10 @@
 - ¿Cómo creamos programas?
 - ¿Qué es un lenguaje de programación?
 - ¿Qué es un compilador?
-- ¿Qué es un intérprete? 
+- ¿Qué es un intérprete?
+  - Portabilidad:
+    + Capacidad de poder ejecutar un programa en cualquier plataforma,
+      siempre y cuando tengas el intérprete 
 
 * Cómo ser un buen programador/desarrollador
 - Aprende sobre algoritmia y desarrolla tus habilidades algorítmicas
@@ -249,7 +252,8 @@ print('hola mundo')
 : entra al if
 
 #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
-  if 3 < 2:
+
+  if 3 < 2 or True:
       print('entra a if')
   elif 6 == 6.0:
           print('entra al primer elif')
@@ -261,7 +265,18 @@ print('hola mundo')
 #+end_src
 
 #+RESULTS:
-: entra al primer elif
+: entra a if
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  l = [1, 3, 5, 6]
+  if 5 in l:
+      print('está el 5')
+  else:
+      print('no está el elemento')
+#+end_src
+
+#+RESULTS:
+: está el 5
 
 **** While
 - Para crear bucles en el flujo de control
@@ -302,12 +317,20 @@ print('hola mundo')
   #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
     # sólo imprimir impares
     x = 0
-    while x <= 10:
+    while x < 10:
         x += 1
         if x % 2 == 0: # es par
             continue
         print(x)    
   #+end_src
+
+#+RESULTS:
+: 1
+: 3
+: 5
+: 7
+: 9
+
 #+RESULTS:
 : 1
 : 3
@@ -349,9 +372,19 @@ print('hola mundo')
 - =range= regresa una secuencia de números de acuerdo a sus argumentos
 
 
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  for caracter in 'hola':
+    print(caracter)
+#+end_src
+#+RESULTS:
+: h
+: o
+: l
+: a
+
   #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
     lista = ['hola', 'mundo', 'mundial'] # tamaño 3, posiciones del 0 al 2 
-    for i in range(len(3)): # regresa los  números 0, 1 y 2, el 3 es no inclusivo
+    for i in range(len(lista)): # regresa los  números 0, 1 y 2, el 3 es no inclusivo
         print(lista[i])
   #+end_src
 #+RESULTS:
