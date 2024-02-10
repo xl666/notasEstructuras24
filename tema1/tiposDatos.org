@@ -1,0 +1,205 @@
+#+title: Tema 1: Conceptos básicos sobre estructuras de datos
+
+* Tipos de datos
+
+Existen dos tipos de datos en los lenguajes de programación:
+- Datos simples 
+- Datos estructurados
+
+**  Datos simples
+- También llamados primitivos
+- No se pueden descomponer
+- El lenguaje de programación los provee por defecto
+- Están estrechamente asociados al procesador
+- Cada tipo de dato suele tener un tamaño fijo en bytes
+- Hay cuatro tipos tradicionalmente:
+  + Números enteros
+  + Números flotantes
+  + Caracteres
+  + Booleanos
+
+*** Números enteros
+- Es probablemente el tipo de dato más general
+- Internamente, en muchos lenguajes (como C) los caracteres y
+  booleanos son números enteros
+- En algunos lenguajes como C hay varios tipos enteros que varían de a
+  cuerdo a su tamaño en bytes:
+  + =short= 2 bytes
+  + =int= 4 bytes
+  + =long= 8 bytes
+- El tamaño en bytes establece el valor máximo que se puede guardar,
+  por ejemplo en 4 bytes cabe hasta 2 elevado a la potencia 32
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  bytes = 4
+  bits = bytes * 8 # un byte son 8 bits
+  print(2 ** bits) # 2 porque se trabaja en binario
+  # En realidad la mitad puesto que hay que considerar negativos
+  print((2 ** bits)/2)
+#+end_src
+#+RESULTS:
+: 4294967296
+: 2147483648.0
+
+- El tamaño es importante para el procesador pues las instrucciones
+  necesitan hacer referencia a posiciones de memoria y éstas
+  consideran longitudes
+- Si el número no cabe en el tipo de dato el valor se desborda (se
+  toman los primeros N bytes de acuerdo al tamaño del tipo, lo que
+  puede dar valores que parecen extraños)
+- En Python, al ser un lenguaje dinámico, el tamaño se adapta, por lo
+  que sólo hay un tipo =int=
+
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    print(type(5))
+    print(type(9999 ** 9999)) # un número muy grande, no cabe en long
+  #+end_src
+#+RESULTS:
+: <class 'int'>
+: <class 'int'>
+
+- Cuidado: aunque no tengas que declarar el tipo o hacer referencia
+  explícita a él, internamente toda expresión tiene un tipo en Python 
+- Con la función =type= puede verse el tipo interno 
+
+*** Números flotantes
+- Se caracterizan por llevar un =.=
+- El procesador los manipula de forma diferente a los enteros
+- Se le suele aplicar truncado cuando hay muchos decimales
+  (posiblemente infinitos)
+- En Python sólo hay el tipo =float= dinámico
+- En otros lenguajes estáticos com =C= también hay un tipo más grande
+  =double=
+- Cuando hay divisiones Python convierte a =float= aunque los
+  operandos sean enteros
+- Si hay interacciones aritméticas entre enteros y flotantes, Python
+  convierte a flotante
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    print(type(4.0))
+    print(1/3) # truncado
+    print(type(4/2))
+    print(3 + 3.0)
+  #+end_src
+
+#+RESULTS:
+: <class 'float'>
+: 0.3333333333333333
+: <class 'float'>
+: 6.0
+  
+
+*** Caracteres
+- En lenguajes como =C= los caracteres son en realidad números
+- Su tamaño es variable de acuerdo a la codificación, aunque
+  tradicionalmente en =C= es de 1 byte
+- En Python no existe este tipo de dato, en caso que lo necesites se
+  pueden crear cadenas de longitud 1
+- Más adelante en el curso se hablará sobre codificación de cadenas
+  para entender la relación entre valores numéricos y caracteres
+
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    print(type('s'))
+    print(type("s")) # lo mismo
+  #+end_src
+  #+RESULTS:
+  : <class 'str'>
+  : <class 'str'>
+
+*** Booleanos
+- Representan valores lógicos verdadero o falso
+- En lenguajes como =C= son internamente enteros, =0= para falos y =1=
+  para verdadero
+- En Python tenemos los valores literales =True= y =False=
+- En Python, al necesitarse una expresión booleana, varias cosas
+  diferentes pueden ser evaluadas como verdadero o falso:
+  + 0 evalúa a falso, otro entero cualquiera a verdadero
+  + Cadena vacía evalúa a falso, no vacía a verdadero
+  + Lista vacía evalúa a falso (en general cosas vacías evalúan a falso)
+      #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+        print(type(True))
+
+        if 0: # evalúa a falso, cualquier otro int a verdadero
+            print('entra al if')
+        else:
+            print('No entra')
+
+        lista = [1, 2, 3]
+        if lista:
+            print('la lista no está vacía')
+        else:
+            print('la lista está vacía')
+      #+end_src
+
+#+RESULTS:
+: <class 'bool'>
+: No entra
+: la lista no está vacía
+
+*** Conversión entre tipos simples
+- Python provee funciones para convertir entre tipos simples (también
+  las hay para tipos complejos)
+- Esta conversión se puede hacer si hay compatibilidad
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    print(int('100')) # de cadena a entero
+    print(int(4.7)) # se trunca decimales
+    print(int(True)) # válido
+
+    print(float('4.33'))
+    print(float('500'))
+    print(float(False))
+
+
+  #+end_src
+
+#+RESULTS:
+: 100
+: 4
+: 1
+: 4.33
+: 500.0
+: 0.0
+
+- En la conversión a booleano se consideran cosas vacías o valor de 0
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  print(bool('True'))
+  print(bool('eueuaeu'))
+  print(bool('False'))
+  print(bool(''))
+  print(bool(0))
+  print(bool(100))
+  print(bool(0.0))
+  print(bool([]))
+  print(bool([1, 2, 3]))
+#+end_src
+
+#+RESULTS:
+: True
+: True
+: True
+: False
+: False
+: True
+: False
+: False
+: True
+
+- Para convertir a cadena se usa la función =str=, cualquier cosa se
+  puede convertir a cadena
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    print(str(44))
+    print(str(4.22))
+    print(str(True))
+  #+end_src
+
+#+RESULTS:
+: 44
+: 4.22
+: True
+
+** Datos complejos
+- También llamados estructurados
+
+* Representación estática y dinámica 
+
+* Mutabilidad y no mutabilidad
