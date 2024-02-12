@@ -390,4 +390,41 @@ print('hola mundo')
 #+RESULTS:
 : hola
 : mundo
-: mundial
+: mundial 
+
+*** Funciones
+- Sirven para encapsular funcionalidad
+- Reciben entradas (parámetros) y producen un valor de salida
+- Son la forma más básica de dividir problemas
+- Dividir es la forma en que los humanos lidiamos con la complejidad
+- El diseño de software trata esencialmente sobre el manejo de la  complejidad en varios niveles
+- Entre mejor seas dividiendo problemas, mejor programador serás
+- El consejo fundamental es tratar de que cada función haga una y sólo una cosa bien
+- A lo anterior se le llama =alta cohesión= y es posiblemente la recomendación de diseño más importante
+- Una función puede regresar un valor, aunque también puede no hacerlo
+
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    # Forma general
+    def identificador(param1, param2, paramN):
+        sentencias_y_expresiones
+        return expresion # opcional
+
+    def saludar(nombre):
+        print('hola ' + nombre) # no hay return
+
+    def sumar(numero1, numero2):
+        return numero1 + numero2
+
+    saludar('Pepe')
+    print(sumar(55, 3))
+  #+end_src
+
+#+RESULTS:
+: hola Pepe
+: 58
+
+- Notar que no hay tipo de retorno, se resuelve de forma dinámica
+- Trata de usar buenos nombres:
+  + El nombre de tu función debería ser un verbo, posiblemente acompañado de un sustantivo: =registrar_usuario=, =econtrar_mayor=
+  + El nombre de tus parámetros (y variables en general) deberían ser sustantivos representativos, evita usar una sola letra como nombre de variable (salvo en casos donde el nombre es bien conocido como la variable =i=)
+- Considera que en gran parte, lo que programamos no es para nosotros mismos, ayúdale al que intenta entender tu código (o ayúdale a tu yo del futuro que intenta entender lo que hiciste antes)
