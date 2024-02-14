@@ -199,7 +199,184 @@ Existen dos tipos de datos en los lenguajes de programación:
 
 ** Datos complejos
 - También llamados estructurados
+- Son tipos de datos que se componen de otros tipos (primitivos u
+  otros datos estructurados)
+- A estos tipos también se les suele llamar "Estructuras de datos"
+- Las estructuras de datos son centrales en la programación
+- Para resolver problemas de programación, la mayoría del tiempo hay
+  que pensar en qué estructura(s) de datos es la más adecuada para
+  resolver el problema
+- Por tanto, entender y saber usar estructuras de datos es una
+  habilidad esencial para todo programador
+- Las estructuras de datos permiten abstraer los problemas, ayudando
+  al manejo de la complejidad
+- Existen estructuras de datos lineales, no lineales y jerárquicas (las cuales se
+  verán más a fondo en todo el curso)
+*** Lineales
+- Cada elemento (excepto el primero y último) tienen un (y sólo uno)
+  elemento predecesor y un elemento sucesor
+- También se les llama indexados, puesto que se pueden recuperar sus
+  elemento a través de un índice
+- Tipos principales de estructuras lineales en Python:
+  + Listas
+    - Similares a los arreglos de otros lenguajes
+    - Son dinámicas (más sobre esto después)
+    - Son mutables (más sobre esto después)
+  + Tuplas
+    * Similares a las listas, pero son no mutables y estáticas
+  + Cadenas
+    * Internamente son arreglos de caracteres
+    * Son no mutables y estáticas
 
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  l = [1, 2, 3] 
+  print(type(l))
+  print(l[0])
+
+  t = (1, 2, 3)
+  print(type(t))
+  print(t[0])
+
+  s = "hola"
+  print(type(s))
+  print(s[0])
+#+end_src
+
+#+RESULTS:
+: <class 'list'>
+: 1
+: <class 'tuple'>
+: 1
+: <class 'str'>
+: h
+
+*** No lineales
+- No tienen un orden
+- No son estructuras de datos pensadas para ser recorridas (aunque se
+  puede hacer)
+- En Python se tienen estos tipos principales:
+  + Diccionarios
+    * En otros lenguajes son conocidos como Hash maps o Hash tables
+    * Cada elemento consta de dos partes: una llave y un valor asociado
+    * Permiten la recuperación aleatoria de elementos (se puede
+      acceder directamente a posiciones de memoria sin necesidad de
+      visitar otras posiciones antes)
+    * La llave es como el  índice, pero puede ser de otros tipos
+      además de enteros (más sobre esto en el tema del curso de diccionarios)
+  + Conjuntos (sets)
+    * Se pueden entender en el sentido matemático
+    * Son colecciones de elementos no ordenados donde no importan las repeticiones
+    * Muy útiles cuando se necesitan operaciones sobre conjuntos como
+      unión, diferencia e intersección
+  + Objetos
+    * Son tipos de datos especiales de la programación orientada a
+      objetos (POO)
+    * Sirven para encapsular varios valores a través de atributos
+    * También pueden tener comportamiento a través de métodos
+    * Para crear objetos antes debes definir clases
+    * Se verán más adelante en el curso
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  d = {'a': 1, 'b': 2, 'c': 3}
+  print(type(d))
+  print(d['a'])
+
+  s = {'hola', 'mundo', 'hola', 'mundial'}
+  print(type(s))
+  print(s)
+
+#+end_src      
+
+#+RESULTS:
+: <class 'dict'>
+: 1
+: <class 'set'>
+: {'mundo', 'hola', 'mundial'}
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  class Persona():
+      def __init__(self, nombre, edad):
+          self.nombre = nombre
+          self.edad = edad
+
+  pepe = Persona('Pepe', 20)
+  print(pepe.edad)
+  juan = Persona('Juan', 15)
+  print(juan.nombre)
+#+end_src
+
+#+RESULTS:
+: 20
+: Juan
+
+*** Jerárquicas
+- Los elementos tienen un orden jerárquico, esto es pueden tener
+  ancestros y descendientes
+- El tipo principal son los árboles
+- Los  árboles se componen de nodos
+- Python no cuenta por defecto con este tipo de datos, pero es fácil
+  crearlo manualmente a partir de objetos
+[[file:./tree.png]]
+  
 * Representación estática y dinámica 
+- Los datos estructurados pueden ser estáticos o dinámicos
+- Cuando son estáticos se debe definir su tamaño puesto que en memoria se reserva el tamaño necesario
+- El tamaño de las estructuras estáticas no puede ser cambiado en tiempo de ejecución (cuando el programa ya está corriendo)
+- En cambio, las estructuras dinámicas pueden crearse y destruirse en tiempo de ejecución, variando su tamaño a conveniencia
+- La ventaja de las estructuras estáticas es que son más eficientes puesto que suelen utilizar espacios de memoria contiguos (caso de los arreglos), lo que permite el acceso aleatorio a elementos
+- En cambio las estructuras dinámicas suelen estar dispersas en memoria, lo que hace más costoso el acceso a elementos
+- En Python la mayoría de estructuras de datos son dinámicas, aunque se intenta mantener espacios contiguos en memoria
+- Es común que en lenguajes interpretados se tengan estructuras dinámicas por defecto, mientras que en los lenguajes compilados estructuras estáticas
+- En lenguajes compilados también se pueden definir estructuras dinámicas usando apuntadores (de forma directa o indirecta en caso de que el lenguaje no permita manipular manualmente apuntadores)
+- Los apuntadores son variables especiales (muy importantes en C y C++) que almacenan direcciones de memoria
+- Python no permite manejar apuntadores pero existen de forma interna
+** Ejemplos de estructuras estáticas
+- Arreglos
+- Cadenas
+- Hashmaps (hasta cierto punto, dependiendo de la implementación)
+  [[file:./array.png]] 
 
+** Ejemplos de estructuras dinámicas
+- Listas ligadas
+- Árboles
+- Objetos
+  [[file:./list.png]]
+  
 * Mutabilidad y no mutabilidad
+- Es una propiedad de las estructuras de datos que se refiere a si los valores de los elementos de la estructura pueden cambiar (mutable) o no (no mutable)
+- Esencialmente si la estructura es no mutable, la memoria asociada está "protegida" contra escrituras, sólo se pueden hacer lecturas
+- Si una estructura es no mutable, también es estática (ya no puedes agregar ni quitar elementos)
+- Una estructura mutable puede ser tanto estática como dinámica
+- Por ejemplo, un arreglo en =C= es estático pero mutable, ya que puedes cambiar los valores de las casillas de memoria 
+- La no mutabilidad es muy importante en el paradigma de programación funcional (visto en un curso posterior)
+- La no mutabilidad también es muy útil en programación concurrente y paralela (vista en otros cursos)
+- Por otro lado, la mutabilidad es peligrosa y es una de las mayores fuentes de bugs en los programas, dado que propician la aparición de efectos colaterales (visto en un tema del segundo parcial) y condiciones de carrera (visto en cursos más avanzados)
+** Ejemplos de estructuras mutables
+- Listas
+- Diccionarios
+- Objetos
+- Árboles
+- Sets (conjuntos)
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  lista = [1, 2, 3]
+  x = lista[0] # lectura, OK
+  lista[1] = 22 # escritura, OK
+#+end_src
+** Ejemplos de estructuras no mutables
+- Tuplas
+- Cadenas
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  tupla = (1, 2, 3)
+  x = tupla[0] # lectura, OK
+  tupla[1] = 22 # escritura, error no es mutable
+
+  # mismo caso con cadenas
+  cadena = 'hola'
+  x = cadena[0] # lectura, OK
+  cadena[1] = 'a' # escritura, error
+
+  cadena1 = 'hola'
+  cadena2 = ' mundo'
+  cadena3 = cadena1 + cadena2 # no hay problema, se genera nueva memoria
+#+end_src
