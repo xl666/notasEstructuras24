@@ -1,0 +1,125 @@
+#+title: Tema 2: Ejecución y manejo de programas
+* Ejecución desde línea de comandos
+- Como ya se mencionó en temas anteriores, el curso se centra en programas de línea de comandos
+- La línea de comandos es la interfaz de usuario más utilizada en la automatización de tareas
+- A lo largo de la carrera es necesario tener familiaridad con esta interfaz
+** Interfaz de línea de comandos
+- Se requiere tener dos programas:
+  + Emulador de terminal: simula una terminal física
+    * En Linux hay muchas opciones de emuladores, por ejemplo: Konsole, alacritty, iTerm, kitty, etc.
+    * En windows se tiene por defecto la terminal del sistema (no recomendable), y powershell que incluye un emulador 
+  + Shell de sistema: es el intérprete que recibe comandos, suele ser un lenguaje de shell scripting completo. Ejemplos:
+    * bash
+    * fish
+    * zsh
+    * powershell
+  + En windows se suele usar powershell, mientras que en linux hay más opciones, siendo tradicionalmente =bash= la opción por defecto
+  + Los IDEs suelen incluir algún emulador y shell de sistema
+  + La línea de comandos siempre está situada sobre un directorio
+    (llamado directorio actual)
+  + Para cambiar de directorio se puede:
+    * Comando =cd= en Linux
+    * Comando =dir= en Windows
+
+      #+begin_src bash :session *bash* :results output :exports both :tangle /tmp/test.sh
+        cd /tmp/prueba # se cambia el directorio actual, hay que saber la ruta
+
+        dir .. # regresar un nivel de directorio con respecto al actual (.. también sirve con cd)
+      #+end_src
+      
+** Ejecución de programas
+- Para ejecutar un programa desde línea de comandos es necesario saber tres cosas:
+  + Cómo se llama el programa: esto es, el nombre del archivo principal que contiene al programa
+  + El archivo correspondiente es ejecutable:
+    * Windows: tiene la extensión =.exe=
+    * Linux: tiene permisos de ejecución
+  + La ruta donde se encuentra dicho archivo: la ruta es el conjunto de directorios para llegar al archivo
+#+begin_src bash :session *bash* :results output :exports both :tangle /tmp/test.sh
+   # Ejemplo de rutas en Linux
+   /tmp # solo directorio 
+
+  # La ruta completa de este archivo, una ruta puede ser de archivo o directorio
+  /home/xl666/oneDrive/Dropbox/clases/estructurasCiber/notas/notasEstructuras24/tema2/tema2.org
+
+  # Ejemplo de ruta en Windows
+  C:\Users\Username\Documents\example.txt
+#+end_src
+- La primera palabra que se pone en la línea de comandos es el archivo
+  donde está el programa (comando)
+- Después se pueden agregar parámetros al programa 
+
+  #+begin_src bash :session *bash* :results output :exports both :tangle /tmp/test.sh
+    # Forma de usar comandos, si el comando está en el PATH
+    nombreComando param1 param2 paramN
+
+    # Forma de usar comando si no está en el PATH
+    /ruta/comando param1 param2 paramN
+
+    # Si configuraste bien Python, el comando Python está en el PATH
+    python script.py param1 param2 paramN
+
+    # Si script no está en directorio actual
+    python /ruta/script.py param1 param2 param2
+  #+end_src
+
+* Paso de parámetros a un programas
+- Es una de las formas más sencillas de pasar entradas a un programa
+- Muy similar a pasar parámetros a una función 
+- No confundir con leer de entrada estándar, como lo hace la función
+  =input=, los parámetros se procesan de forma diferente
+- En general, siempre prefiere usar parámetros en vez de entrada
+  estándar (excepto en el sistema del curso donde sólo se pueden pasar
+  entradas por entrada estándar)
+- Los parámetros permiten automatizar programas con scripts de sistema
+  de forma más sencilla (cubierto en otro materia de la carrera)
+- El tipo de parámetros más simple son los posicionales (sólo se
+  cubrirá ese tipo en el curos), aunque existen otros (modificadores,
+  variables)
+
+  #+begin_src bash :session *bash* :results output :exports both :tangle /tmp/test.sh
+    # ejemplo de modificadores
+    ls -l -a
+
+    # ejemplo de variables
+    # copia archivo1 y archivo2 a /tmp
+    cp archivo1 archivo2 /tmp/
+
+    # copia archivo1, archivo2, archivo3 a /tmp
+    cp archivo1 archivo2 archivo3 /tmp
+  #+end_src
+** En Python
+- Se usa el módulo =sys= que cuenta con una lista =argv= con los
+  parámetros que pasas por línea de comandos
+- Los parámetros siempre  se pasan como cadena (tipo =str=), de ser
+  necesario hay que hacer conversiones de tipo
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  import sys
+
+  param1 = sys.argv[1]
+  param2 = sys.argv[2]
+  # y así sucesivamente
+
+  sys.argv[0] # es la ruta del script que ejecutas
+#+end_src
+
+- Un ejemplo más largo
+- Un programa que suma dos números que se reciben como parámetro
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  import sys
+
+  if len(sys.argv) < 3: # hay que contar posición 0
+      print('Error: se esperaban dos parámetros')
+      exit(1) # terminación con error
+
+  numero1 = int(sys.argv[1])
+  numero2 = int(sys.argv[2])
+
+  print(numero1 + numero2)
+    
+#+end_src  
+
+* Excepciones
+
+* Módulos y paquetes
