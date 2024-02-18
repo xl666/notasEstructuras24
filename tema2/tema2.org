@@ -59,10 +59,10 @@
     python script.py param1 param2 paramN
 
     # Si script no está en directorio actual
-    python /ruta/script.py param1 param2 param2
+    python /ruta/script.py param1 param2 paramN
   #+end_src
 
-* Paso de parámetros a un programas
+* Paso de parámetros a un programa
 - Es una de las formas más sencillas de pasar entradas a un programa
 - Muy similar a pasar parámetros a una función 
 - No confundir con leer de entrada estándar, como lo hace la función
@@ -120,6 +120,131 @@
     
 #+end_src  
 
-* Excepciones
+* Manejo de errores
+- En general existen 3 tipos de errores en un programa:
+  + Errores en tiempo de compilación/traducción
+  + Errores en tiempo de ejecución (excepciones)
+  + Errores lógicos
 
+** Errores en tiempo de compilación/traducción
+- Son errores que arroja el traductor antes de que se pueda correr el código, osea que suceden como parte del proceso de traducción
+- Este tipo de errores tiene 3 categorías:
+  + Errores léxicos:
+    * Se refieren a no poder separar apropiadamente partes del programa (tokens)
+    * Ejemplos puede ser empezar un identificador con un número, utilizar símbolos no soportados como =@=, usar guiones =-= en un identificador
+  + Errores sintácticos
+    * Suceden cuando no te apegas a la gramática del lenguaje
+    * La gramática es un conjunto de reglas formales que establecen las formas válidas del lenguaje (sentencias y expresiones)
+    * Ejemplos es no poner =:= al iniciar un if, no utilizar correctamente la identación, no usar operadores para conectar expresiones, etc.
+  + Errores semánticos
+    * Son errores que suceden cuando algo no tiene sentido
+    * Principalmente tratar de hacer cosas entre tipos que no son compatibles entre si
+    * Por ejemplo: invocar una función definida con tres parámetros obligatorios pero pasar sólo dos parámetros, tratar de hacer una suma entre un entero y una cadena, invocar una función que no existe
+    
+- En un lenguaje compilado, si tienes errores de este tipo no se puede generar un ejecutable y por lo tanto no se puede correr el programa
+- En un lenguaje interpretado como Python el error podría manifestarse hasta llegar a la línea con el problema, siendo posible que otras partes del programa se hayan ejecutado hasta entonces (lo cual no es bueno)
+- Esta es una gran diferencia entre lenguajes compilados e interpretados, en general se considera que los lenguajes compilados son mas "confiables" dado que previenen este tipo de errores
+- Para mitigar este problema, Python hace una revisión del código fuente antes de empezar a interpretar, sin embargo, la revisión se limita a cuestiones léxicas y sintácticas, no se cachan problemas semánticos
+
+** Errores en tiempo de ejecución
+- También llamados excepciones
+- Son errores que suceden mientras el programa se ejecuta, esto es, cuando ya se convirtió en un proceso del sistema (verán procesos en sistemas operativos)
+- Se dan principalmente por problemas en el ambiente de ejecución o por entradas externas (como las de un usuario)
+- Estos problemas son impredecibles (no puedes saber si van a ocurrir o no a priori)
+- Este tipo de errores no pueden ser atrapados por el traductor
+- Ejemplos:
+  + Tratar de hacer una conexión a un manejador de base de datos, pero no hay red en ese momento
+  + Tratar de leer un archivo pero éste no existe
+  + Tratar de dividir dos números pero el usuario pasó 0 en el denominador
+  + Intentar guardar un archivo pero ya no hay espacio en disco
+
+*** Manejo de excepciones
+- Varios lenguajes de programación (incluyendo Python) cuenta con mecanismos para poder manejar excepciones y recuperarse de ellas
+- Este mecanismo es conocido como =try-catch= o en el caso de Python =try-except=
+- Este es un tipo de sentencia que tiene tres partes:
+  + Bloque =try= : en este bloque se coloca el código que se sabe pudiera provocar una excepción. La ejecución del bloque se interrumpe en el momento que ocurre la excepción (si es que ocurre)
+  + Bloque(s) =except= : se entra en este bloque si es que ocurre una excepción en el boque =try=. Es código para recuperarse del error; avisar de él o registrarlo; o regresar un valor por defecto. Puede haber varios bloques =except= dependiendo del tipo de excepción (no se verá en este curso)
+  + Bloque =fianally= : es opcional, este bloque se ejecuta independientemente de si ocurre o no una excepción. Útil para cerrar recursos (como archivos o conexiones) de forma confiable
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  # Forma
+  try:
+      sentencias_expresiones_normales
+      sentencias_expresiones_con_posible_excepcion
+      sentencias_expresiones_normales
+  except:
+      sentencias_expresiones_para_manejar_error
+  finally:
+      sentencias_expresiones_ejecutar_siempre
+#+end_src
+
+- Un ejemplo más largo
+
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/suma.py
+    import sys
+
+    if len(sys.argv) < 3: # hay que contar posición 0
+        print('Error: se esperaban dos parámetros')
+        exit(1) # terminación con error
+
+    try: # la conversión puede fallar
+        numero1 = int(sys.argv[1])
+        numero2 = int(sys.argv[2])
+        print(numero1 + numero2)
+    except:
+        print('Error: se esperaba que pasaras números')
+        exit(1)
+    finally:
+        print('Fin del programa')
+
+  #+end_src
+- Las excepciones se propagan, si no las cachas en una función se propagan a quien mandó a llamar a la función
+- Si en ningún momento se atrapa la excepción, la excepción causa la terminación del programa
+- Si eso sucede, aparece el =stack-trace= del error en la consola, éste es un mensaje con detalles del error que describe cómo se fue propagando la excepción
+- Estos mensajes ayudan a que el programador corrija el error (no te espantes)
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/propagacion.py
+
+  def va_a_fallar():
+    v = 5/0
+    return True
+
+  def invocadora():
+    try: # se detiene propagación
+      b = va_a_fallar()
+    except:
+      b = False
+    return b
+
+  invocadora() # también se podría poner acá el try
+#+end_src  
+
+** Errores lógicos
+- Son el tipo de error más complicado de detectar y corregir
+- Son errores que no necesariamente generan excepciones (aunque podrían hacerlo), por lo que pueden ser silenciosos
+- Tienen que ver con que el programa no haga lo que se espera, arrojando resultados inválidos
+- Suelen requerir de herramientas (como los depuradores o debuggers) y técnicas de depuración para poder corregirlos
+
+** Consejos para depurar código
+- La corrección de errores, también llamada depuración (debugging), es una habilidad fundamental de todo programador
+- Todos nos equivocamos (sin importar tu nivel) por distintas razones, no se puede esperar que los errores no ocurran
+- Podría decirse que eres tan buen programador como depurador de errores
+- Siempre lee los =stack-trace= de abajo hacía arriba (empieza por el final del mensaje)
+- Lo que está al último es el primer punto del código donde surgió la excepción (los demás puntos es donde se fue propagando)
+- Los errores normalmente están en el punto donde surge la excepción
+- En un =stack-trace= analiza el tipo (o tipos) de error que se reporta
+- Para mantener a raya la cantidad de errores: SIEMPRE después de programar una rutina (una función por ejemplo) pruébala de inmediato, no esperes a tener muchas rutinas para empezar a probar, va a ser más difícil saber dónde está el error y corregirlo
+- Para que el consejo anterior funcione, tus rutinas deben de ser lo más cohesivas posible (hacer solo una cosa) así serán más fáciles de probar
+- Si quieres ir más allá, hay metodologías de programación (TDD por ejemplo) que plantean definir las pruebas antes de programar (es un tema avanzado para este curso)
+- Hay varias técnicas y herramientas que sirven para depurar errores, en este curso se presenta una de las técnicas más simples a continuación 
+*** Técnica print-trace
+- Consiste en primero analizar el error y sus efectos
+- Se plantea una hipótesis (o varias) sobre porqué se cree que el error ocurre
+- Se investiga el error y la hipótesis poniendo mensajes de impresión (print) en puntos del código de los cuales se sospecha
+- Estos mensajes de print pueden mostrar valores de variables con resultados intermedios, o bien corroborar si se está invocando una función o se está entrando a un bloque de código al que debería entrarse
+- Se ejecuta el programa tratando de reproducir el error y se analizan los mensajes arrojados
+- Si después del análisis no se ha descubierto el problema, se agregan o mueven los prints o bien se cambia de hipótesis
+- Una vez se encuentra el problema, se corrige y se prueba que ya no ocurre el error
+- Finalmente se borran los mensajes de print (no hay que dejarlos)
+  
 * Módulos y paquetes

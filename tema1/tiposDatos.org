@@ -301,6 +301,7 @@ Existen dos tipos de datos en los lenguajes de programación:
 
   pepe = Persona('Pepe', 20)
   print(pepe.edad)
+  pepe.pais = 'méxico'
   juan = Persona('Juan', 15)
   print(juan.nombre)
 #+end_src
@@ -340,7 +341,8 @@ Existen dos tipos de datos en los lenguajes de programación:
 - Listas ligadas
 - Árboles
 - Objetos
-  [[file:./list.png]]
+  
+  r[[file:./list.png]]
   
 * Mutabilidad y no mutabilidad
 - Es una propiedad de las estructuras de datos que se refiere a si los valores de los elementos de la estructura pueden cambiar (mutable) o no (no mutable)
@@ -369,14 +371,30 @@ Existen dos tipos de datos en los lenguajes de programación:
 #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
   tupla = (1, 2, 3)
   x = tupla[0] # lectura, OK
-  tupla[1] = 22 # escritura, error no es mutable
+  #tupla[1] = 22 # escritura, error no es mutable
 
   # mismo caso con cadenas
   cadena = 'hola'
   x = cadena[0] # lectura, OK
-  cadena[1] = 'a' # escritura, error
+#  cadena[1] = 'a' # escritura, error
 
   cadena1 = 'hola'
   cadena2 = ' mundo'
   cadena3 = cadena1 + cadena2 # no hay problema, se genera nueva memoria
+
+
 #+end_src
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  def multi_valor():
+      return 1, True
+  v, o = multi_valor()
+  print(v)
+  print(o)
+  print(type(multi_valor()))
+#+end_src
+
+#+RESULTS:
+: 1
+: True
+: <class 'tuple'>
