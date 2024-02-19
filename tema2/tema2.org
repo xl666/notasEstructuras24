@@ -62,6 +62,7 @@
     python /ruta/script.py param1 param2 paramN
   #+end_src
 
+
 * Paso de parámetros a un programa
 - Es una de las formas más sencillas de pasar entradas a un programa
 - Muy similar a pasar parámetros a una función 
@@ -119,6 +120,7 @@
   print(numero1 + numero2)
     
 #+end_src  
+
 
 * Manejo de errores
 - En general existen 3 tipos de errores en un programa:
@@ -247,4 +249,129 @@
 - Una vez se encuentra el problema, se corrige y se prueba que ya no ocurre el error
 - Finalmente se borran los mensajes de print (no hay que dejarlos)
   
+
 * Módulos y paquetes
+- Dependiendo del tamaño de un proyecto, se vuelve necesario dividirlo
+  en varias partes y subpartes
+- La división se realiza en la etapa de diseño y permite segmentar la complejidad del problema
+- Esta división también permite repartir responsabilidades entre un equipo de desarrolladores
+- En python se puede dividir un proyecto en tres niveles (niveles de diseño):
+  + Funciones/clases: el problema se divide en varias rutinas o clases
+    (POO) en un solo archivo =.py=
+  + Módulos: cada archivo =.py= es un módulo, un proyecto puede
+    consistir de varios módulos en el mismo directorio. Cada módulo se
+    encarga de un aspecto específico del problema 
+  + Paquetes: se pueden tener varios directorios, cada uno con sus
+    propios módulos. Cada paquete tiene una responsabilidad de acuerdo
+    a la arquitectura del sistema (acceso a datos, lógica de negocios,
+    interfaces de usuario, etc)
+
+** Creación y uso de módulos
+- Si quieres crear un módulo, basta con crear un archivo =.py=
+- Si pones varios módulos en el mismo directorio, puedes usar un
+  módulo dentro de otro de la siguiente manera:
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+
+    import otro_modulo
+
+    # usar rutinas
+    otro_modulo.rutina()
+  #+end_src
+
+- Se pueden usar alias (útil cuando el nombre es muy largo)
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    import otro_modulo as otro
+
+    otro.rutina()
+  #+end_src
+- Se pueden importar sola partes que interesan, ahorrando escribir el
+  nombre del módulo o paquete
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+
+    # importar des rutinas
+    from otro_modulo import rutina1, rutina2
+    rutina1()
+    rutina2()
+
+    # se pueden importar todas, no recomendable
+    from otro_modulo import *
+    rutina1()
+    rutina2()
+    rutina3()
+  #+end_src
+
+*** Usar módulos y paquetes de terceros
+- Se refiere a importar módulos que fueron creados por otros programadores
+- Pueden ser módulos que trae el propio lenguaje, o que se descargan
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  # sacar fecha y hora actual del sistema
+  import datetime
+
+  # el módulo datetime tiene una clase también llamada datetime
+  print(datetime.datetime.now())
+
+  # otra forma más cómoda
+  from datetime import datetime as fecha
+  print(fecha.now())
+#+end_src
+
+#+RESULTS:
+: 2024-02-18 13:49:39.301166
+: 2024-02-18 13:49:39.301218
+
+**** Buscar ayuda
+
+- Para obtener ayuda referente al uso de un módulo
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    import datetime
+    # ver todo lo que está definido (funciones, variables/constantes, clases, submodulos )
+    dir(datetime)
+
+    # ver ayuda de ese módulo
+    help(datetime)
+
+    # ver ayuda de una clase o rutina
+    help(datetime.datetime.now)
+
+  #+end_src
+
+- También puedes visitar la documentación oficial:
+  https://docs.python.org
+- Muchos IDEs incluyen la documentación oficial del lenguaje
+
+**** Gestor de paquetes  
+- Python cuenta con su propio gestor de paquetes de terceros (=pip=), para que
+  sea más fácil instalar correctamente los paquetes y que estén
+  disponibles en cualquier proyecto
+- Instalar un nuevo paquete con pip
+
+  #+begin_src bash :session *bash* :results output :exports both :tangle /tmp/test.sh
+pip install paquete 
+  #+end_src
+  - Python cuenta con una gran comunidad de paquetes de terceros
+  - Repositorio oficial: https://pypi.org/
+   
+** Creación y uso de paquetes
+- Se crea un directorio por paquete, en cada directorio se pone un
+  archivo especial =__init__.py=
+- El archivo especial puede estar vacío
+- Por ejemplo, considera la siguiente estructura:
+
+my_package/
+├── __init__.py
+├── module1.py
+└── subpackage/
+    ├── __init__.py
+    └── module2.py
+
+- Para usar modulo2 desde modulo1:
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    from subpackage import module2
+
+    module2.rutina()
+  #+end_src
+    
+    - Para fines del curso, incluso en proyectos, no será necesario
+      definir paquetes, con tener todos los módulos en el mismo
+      directorio es suficiente
