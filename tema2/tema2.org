@@ -358,12 +358,17 @@ pip install paquete
 - El archivo especial puede estar vacío
 - Por ejemplo, considera la siguiente estructura:
 
-my_package/
-├── __init__.py
-├── module1.py
-└── subpackage/
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    """
+    my_package/
     ├── __init__.py
-    └── module2.py
+    ├── module1.py
+    └── subpackage/
+        ├── __init__.py
+        └── module2.py
+    """
+  #+end_src
+
 
 - Para usar modulo2 desde modulo1:
   #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
