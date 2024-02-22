@@ -110,7 +110,7 @@
 #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
   import sys
 
-  if len(sys.argv) < 3: # hay que contar posición 0
+  if len(sys.argv) != 3: # hay que contar posición 0
       print('Error: se esperaban dos parámetros')
       exit(1) # terminación con error
 
@@ -300,6 +300,42 @@
     rutina3()
   #+end_src
 
+*** Módulo =__main__=
+- Cada módulo tiene un nombre asociado, el cual se puede recuperar
+  mediante la variable especial =__name__=
+- Esta variable la tienen todos los módulos
+- En general su valor no es muy relevante, pero en el caso del módulo
+  que ejecutas directamente (desde la línea de comandos por ejemplo),
+  su nombre tiene un valor especial, el cual es =__main__=
+
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    print(__name__)
+    import os
+    print(os.__name__)
+  #+end_src
+
+#+RESULTS:
+: __main__
+: os
+
+- Esta característica es bastante útil para poner código que sólo
+  quieres que se ejecute cuando el módulo es el principal (el que se
+  ejecuta directamente)
+- El código que dejas suelto, fuera de una función o clase, se ejecuta
+  cuando importas los módulos
+- Con esto se pueden lograr algo similar a la rutina =main= de
+  lenguajes como =C= o =Java=
+- También es útil para poner código de prueba en módulos secundarios
+
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    # poner esto al final de tus script
+    if __name__ == '__main__':
+        print('solo se ejecuta si es el módulo principal')
+
+  #+end_src
+- El bloque de código anterior es una buena práctica y se estará
+  usando en el curso a partir de ahora
+
 *** Usar módulos y paquetes de terceros
 - Se refiere a importar módulos que fueron creados por otros programadores
 - Pueden ser módulos que trae el propio lenguaje, o que se descargan
@@ -351,7 +387,38 @@ pip install paquete
   #+end_src
   - Python cuenta con una gran comunidad de paquetes de terceros
   - Repositorio oficial: https://pypi.org/
-   
+
+*** El zen de Python
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+import this
+#+end_src
+
+#+RESULTS:
+#+begin_example
+The Zen of Python, by Tim Peters
+
+Beautiful is better than ugly.
+Explicit is better than implicit.
+Simple is better than complex.
+Complex is better than complicated.
+Flat is better than nested.
+Sparse is better than dense.
+Readability counts.
+Special cases aren't special enough to break the rules.
+Although practicality beats purity.
+Errors should never pass silently.
+Unless explicitly silenced.
+In the face of ambiguity, refuse the temptation to guess.
+There should be one-- and preferably only one --obvious way to do it.
+Although that way may not be obvious at first unless you're Dutch.
+Now is better than never.
+Although never is often better than *right* now.
+If the implementation is hard to explain, it's a bad idea.
+If the implementation is easy to explain, it may be a good idea.
+Namespaces are one honking great idea -- let's do more of those!
+#+end_example
+
 ** Creación y uso de paquetes
 - Se crea un directorio por paquete, en cada directorio se pone un
   archivo especial =__init__.py=
