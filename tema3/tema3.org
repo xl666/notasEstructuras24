@@ -1,0 +1,221 @@
+#+title: Cadenas de texto
+
+* Generalidades sobre  texto
+- El texto es el tipo de dato más general, con texto se puede representar cualquier otro tipo de dato
+- Los sistemas operativos tratan de forma especial al texto, ya que muchas cosas en el sistema se representan como texto:
+  + Interfaz de línea de comandos
+  + Archivos de configuración
+  + Bitácoras del sistema
+  + Entrada y salida estándar
+  + Datos intercambiados por protocolos (como http)
+  + Scripts
+- Saber manipular texto es esencial en la automatización de tareas
+- Solo se necesita texto para interactuar con una computadora (los
+  administradores de servidores saben esto bien)
+- Una computadora sólo maneja números binarios, esto es, ceros y unos
+
+** Terminología
+*** Texto plano:
+  + Se refiere al texto que no ha sido procesado de forma especial
+  + Cuando hablamos de texto en este curso, hacemos referencia a texto plano
+  + Un archivo de texto plano, sólo tiene texto, no lo acompaña otros
+    datos binarios
+  + Por ejemplo, el texto que escribes en un procesador de texto como
+    word, no es texto plano, dado que se codifica a un formato
+    propietario de Microsoft, que puede incluir imágenes u otros
+    elementos binarios
+  + El código que escribes en tu editor es un ejemplo de texto plano,
+    toda la programación se hace en texto plano
+  + El texto plano está estandarizado y no es propiedad de ninguna
+    organización u empresa (es libre)
+  + Si valoras tu información usa formatos libres, como el texto plano
+*** Parsing de texto
+- Se refiere en general a  procesar texto
+- Está asociado al procesamiento en modo lectura (sin modificar el
+  texto original)
+- Se utiliza para  lograr algunas de las  siguientes cosas:
+  + Recuperar elementos particulares en el texto
+  + Transformar el texto entre formatos (renderizar a imagen por ejemplo)
+  + Construir una estructura de datos que facilite el acceso a
+    elementos: por ejemplo, construir un árbol a partir de un archivo
+    =html=
+- En computación se cuenta con una herramienta general muy poderosa para el
+  parsing de texto: expresiones regulares (es un tema avanzado para
+  este curso, lo ven más adelante en la carrera)
+
+*** Parsers de texto
+- Son herramientas creadas para facilitar el parsing de algún formato
+  de texto en particular
+- Suelen usar expresiones regulares
+- Por ejemplo, si quieres parsear un archivo =html= conviene primero
+  buscar si existe un parser para =html=
+- El parser normalmente le entrega al programador (u otras partes del programa) alguna estructura de
+  datos más fácil de procesar, un ejemplo común es un árbol
+- Cabe decir que muchos tipos de programas como los compiladores y los
+  navegadores web incluyen sus propios parsers
+- Por ejemplo, un compilador primero parsea (mediante un parser del
+  lenguaje de programación) el código fuente y luego construye un
+  árbol sintáctico, con el cual es más fácil generar instrucciones
+  
+* Estándares de texto  
+- Dado que las computadoras sólo pueden manejar números, es necesario contar con estándares para mapear entre si números y caracteres de texto
+- A estos estándares también se les conoce como "charsets"
+- A un mapeo en particular entre carácter y un número se le conoce como "code point"
+- Existen muchos charsets, en este curso se mencionarán dos:
+
+**  ASCII:
+- Es el estándar clásico
+- Originalmente pensado sólo para  el alfabeto en inglés
+- Define 128 caracteres, incluyendo dígitos, letras (mayúsculas y minúsculas) y caracteres especiales
+- Para español se tiene una versión extendida de ascii con 256
+  caracteres (ASCII extendido)
+- En un solo byte (hasta 256 valores) se pueden representar todos
+  los caracteres
+- Muchos caracteres son "no imprimibles" esto es, no los puedes
+  ver en una pantalla, por ejemplo el carácter de =backspace=
+
+[[file:./ascii.webp]]
+
+*** Unicode:
+- Un problema de ASCII es que no cubre muchos de los caracteres de
+      varios idiomas: japones, griego, árabe, etc.
+- Esto obligaba a tener muchos estándares diferentes, lo cual
+  causa muchos problemas de compatibilidad
+- En la era de Internet este es un problema serio
+- Unicode es el estándar moderno que cubre todos los posibles
+  caracteres de todos los idiomas
+- Actualmente tiene definidos al rededor de 140,000 caracteres con
+  espacio para definir más si hace falta
+- Esto incluye cosas como emoticones
+- Es una extensión de ASCII, esto es, los primeros 256 caracteres
+  son los mismos
+- Un problema de unicode es que ya no basta un byte para
+  representar caracteres
+
+- En python, la función =ord= regresa el code point correspondiente a
+  un carácter 
+- Mientras que la función =chr= hace la operación inversa
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  print(ord('a'))
+  print(ord('A'))
+
+  print(chr(97))
+  print(chr(65))
+
+  # un carácter en japones 
+  print(ord('こ'))
+
+  # un emoji
+  print(ord('😀'))
+#+end_src
+
+#+RESULTS:
+: 97
+: 65
+: a
+: A
+: 12371
+: 128512
+
+
+** Codificación de texto
+- Se  refiere a cómo representar caracteres en código binario
+- Esto permite hacer conversiones de texto a binario y vise-versa
+- Esto es necesario, por ejemplo, al querer abrir un archivo de texto
+  (internamente es binario, como todo),
+  para que el sistema pueda mostrar los caracteres adecuados
+- En =ASCII= la conversión es muy simple, cada byte es un carácter
+- En Unicode la cosa es más complicada, se requieren a su vez
+  estándares de codificación
+- Estos estándares establecen la correspondencia entre bytes y
+  caracteres
+- Los archivos de texto tienen un metadato conocido como =BOM= que le
+  indica al sistema el estándar  de codificación con que fue almacenado 
+- Existen muchos estándares de codificación para Unicode
+- Tratar diferentes codificaciones al mismo tiempo es una tarea en
+  extremo compleja y propensa a errores
+- Por esta razón, en la actualidad la mayoría de sistemas adoptan el
+  estándar =utf-8= para todo
+- Este estándar usa de 1 a 4 bytes (dependiendo del caracter) para
+  representar caracteres y se considera eficiente (no desperdicia
+  mucho espacio)
+- Trata de usar siempre Unicode y =utf-8=
+- Lo anterior es fácil en cualquier sistema diferente de Windows, ya
+  que usan =utf-8= por defecto
+- Si tu sistema no usa =utf-8= por defecto, puede ser que tengas que guardar
+  manualmente con esa codificación (en las opciones de guardar como de
+  tu editor)
+- Si guardaste un archivo (código por ejemplo) en una codificación
+  diferente a =utf-8= y lo intentas abrir como =utf-8= (cosa que puede
+  pasar si creas un archivo en windows y luego lo quieres abrir en
+  Linux) es posible que parte del texto se visualice corrupto (sobre
+  todo en caracteres que rebasen ASCII)
+
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    # Revisar sistema de codificación por defecto del SO
+
+    import sys
+    print(sys.getdefaultencoding())
+  #+end_src
+
+  #+RESULTS:
+  : utf-8
+  
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  # Ejemplo de codificación simple (solo caracteres ASCII)
+  s = 'hola'
+  print(len(s))
+  b = s.encode('utf-8') # convertir a binario
+  print(b) # ver cadena binaria 
+  print(list(b)) # ver valores de bytes
+  print(b.decode('utf-8')) # regresar a texto
+#+end_src      
+
+#+RESULTS:
+: 4
+: b'hola'
+: [104, 111, 108, 97]
+: hola
+
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  # Ejemplo de codificación más complicado
+  s = 'こんにちは' # hola en japones
+  print(len(s)) # python cuenta caracteres, no bytes
+  b = s.encode('utf-8') # convertir a binario
+  print(b) # ver cadena binaria
+  print(len(b)) # hay más de 5 bytes
+  print(list(b)) # ver valores de bytes
+  print(b.decode('utf-8')) # regresar a texto
+#+end_src
+
+#+RESULTS:
+: 5
+: b'\xe3\x81\x93\xe3\x82\x93\xe3\x81\xab\xe3\x81\xa1\xe3\x81\xaf'
+: 15
+: [227, 129, 147, 227, 130, 147, 227, 129, 171, 227, 129, 161, 227, 129, 175]
+: こんにちは
+
+- Python (a partir de su versión 3) es un lenguaje diseñado para trabajar con Unicode (esto no es
+  así para muchos lenguajes que trabajan por defecto con ASCII)
+- Esto le facilita mucho la vida a los programadores
+- Por ejemplo, en el código de antes, la longitud de la cadena "こんにちは" es 5, a pesar de que internamente puedan ser varios bytes
+  (dependiendo de la codificación)
+- A menos que tengas que hacer conversiones entre texto en diferentes
+  estándares, no es necesario preocuparse mucho de cómo se maneja
+  internamente el texto
+- Mantente usando siempre =utf-8= y todo va a estar bien
+
+* Tipo =str=
+
+* Creación de cadenas
+
+* Recorrido de cadenas
+
+* Subcadenas
+
+* Operaciones sobre cadenas
+
+* Plantillas de texto 
+
