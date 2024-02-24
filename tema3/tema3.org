@@ -74,7 +74,7 @@
 - Muchos caracteres son "no imprimibles" esto es, no los puedes
   ver en una pantalla, por ejemplo el carácter de =backspace=
 
-[[file:./ascii.webp]]
+[[file:./ascii.png]]
 
 *** Unicode:
 - Un problema de ASCII es que no cubre muchos de los caracteres de
