@@ -280,7 +280,7 @@
 
 - Se pueden usar alias (útil cuando el nombre es muy largo)
   #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
-    import otro_modulo as otro
+    import otro_modulo.sub.sub2 as otro
 
     otro.rutina()
   #+end_src
@@ -289,8 +289,8 @@
   #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
 
     # importar des rutinas
-    from otro_modulo import rutina1, rutina2
-    rutina1()
+    from otro_modulo import rutina1 as r1, rutina2
+    r1()
     rutina2()
 
     # se pueden importar todas, no recomendable
