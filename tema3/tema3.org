@@ -1,4 +1,4 @@
-#+title: Cadenas de texto
+#+title: Tema 3: Cadenas de texto
 
 * Generalidades sobre  texto
 - El texto es el tipo de dato más general, con texto se puede representar cualquier otro tipo de dato
@@ -207,15 +207,229 @@
   internamente el texto
 - Mantente usando siempre =utf-8= y todo va a estar bien
 
-* Tipo =str=
+* Manejo de cadenas
 
-* Creación de cadenas
+** Tipo =str=
+- Es el tipo básico para manejar cadenas, con soporte nativo de Unicode
+- Definido en la el núcleo del lenguaje (no hay que importar nada para
+  usarlas)
+- Existen otros tipos relacionados, pero en el curso sólo se verá este tipo
+- Es un tipo lineal, estático y no mutable
+- En lenguajes como =C= es un arreglo de caracteres (en Python no es
+  necesariamente así)
+- Cualquier tipo de dato puede potencialmente transformarse a cadena
+  mediante la función =str=
+- Dado que es lineal es indexable
 
-* Recorrido de cadenas
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  s = 'hola mundo'
+  print(s[0])  # primera
+  print(s[-1]) # última
+  print(s[len(s)-1]) # también última
+#+end_src  
 
-* Subcadenas
+#+RESULTS:
+: h
+: o
+: o
 
-* Operaciones sobre cadenas
+** Creación de cadenas
+- Existen dos formas literales válidas:
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    'Ejemplo de cadena'
+    "Ejemplo de cadena"
+  #+end_src
+- En general se prefiere el estilo de comilla simple (estilo PEP8)
+- Se puede usar comilla doble si se quiere tener una comilla simple
+  literal, o bien se puede usar el carácter de escape (backslash)
+- El carácter de escape es muy útil en varias situaciones y es una
+  forma de insertar caracteres especiales no imprimibles como salto de
+  línea y tabulador
 
-* Plantillas de texto 
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    print("My father's house")
+    print('My father\'s house') # se escapa la '
+    print('Primera línea\nSegunda línea')
+    print('\tCon sangría')
+  #+end_src
 
+  #+RESULTS:
+  : My father's house
+  : My father's house
+  : Primera línea
+  : Segunda línea
+  : 	Con sangría
+
+  - También existen las cadenas multi-linea para lo cual se usa triple
+    comilla simple o doble
+
+    #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+      s = '''Esta es una
+      cadena de varias líneas
+      útil para crear formatos de texto
+      o documentar funciones y módulos
+      '''
+      print(s)
+    #+end_src
+
+#+RESULTS:
+: Esta es una
+: cadena de varias líneas
+: útil para crear formatos de texto
+: o documentar funciones y módulos
+
+** Recorrido de cadenas
+- Se pueden recorrer los caracteres simplemente con un for:
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    for caracter in 'hola':
+        print(caracter)
+  #+end_src
+
+#+RESULTS:
+: h
+: o
+: l
+: a
+
+- O al estilo =C=
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  s = 'hola'
+  for i in range(len(s)):
+      print(s[i])
+#+end_src  
+
+#+RESULTS:
+: h
+: o
+: l
+: a
+
+** Subcadenas
+- Una subcadena es cualquier fragmento de una cadena, desde un solo carácter hasta la cadena completa
+- La forma más directa que tiene Python para obtener subcadenas es con el formato de "rebanadas" (slices)
+- Con este método cada subcadena es una nueva cadena 
+- Este método funciona para otras estructuras lineales (como listas)
+- El formato de rebanadas requiere de dos índices (pude ser cualquier expresión entera):
+  + Índice izquierdo inclusivo: posición inicial a partir de la cual se quiere obtener la subcadena
+  + Índice derecho no inclusivo: posición final hasta la que se quiere incluir la subcadena, siempre se toma una posición antes
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  s = 'hola'
+  print(s[0:4]) # copia completa
+  print(s[:len(s)]) # lo mismo
+  print(s[:]) # otra vez lo mismo
+
+  # todos menos el primer caracter
+  print(s[1:])
+
+  # todos menos el último
+  print(s[:-1])
+
+  # las dos letras de enmedio
+  print(s[1:3])
+#+end_src    
+
+#+RESULTS:
+: hola
+: hola
+: hola
+: ola
+: hol
+: ol    
+
+** Operaciones sobre cadenas
+
+*** Longitud
+- =len= es una función genérica de Python que permite determinar el
+  número de elementos en varias estructuras de datos
+- En el caso de una cadena establece el número de caracteres (sin
+  importar su tamaño en bytes)
+
+*** Concatenación
+- Permite unir dos cadenas creando una nueva
+- Se utiliza el operador =+=
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  s = 'hola ' + 'mundo'
+  print(s)
+
+  #+end_src  
+
+#+RESULTS:
+: hola mundo
+
+*** strip
+
+*** split
+
+*** startswith
+
+*** endswith
+
+*** join
+- Concatena cadenas en una lista de cadenas, usando la cadena actual
+  como separador
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+print(','.join(['hola', 'mundo', 'mundial']))
+#+end_src
+
+#+RESULTS:
+: hola,mundo,mundial
+
+- Si necesitas modificar caracteres de una cadena, una forma simple y eficiente
+  de hacerlo es primero convertir la cadena a lista, mediante la
+  función =list= y luego de las modificaciones regresar a cadena con
+  la función =join= usando la cadena vacía como separador
+  
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    s = 'hola mundo'
+    ls = list(s)
+    print(ls)
+    ls[0] = 'H'
+    s = ''.join(ls)
+    print(s)
+  #+end_src
+
+  #+RESULTS:
+  : ['h', 'o', 'l', 'a', ' ', 'm', 'u', 'n', 'd', 'o']
+  : Hola mundo
+
+
+** Plantillas de texto 
+- Son una forma conveniente de crear cadenas con espacios que se van a
+  rellenar después
+- Son la forma principal de escribir mensajes largos que dependen de
+  valores de expresiones (como variables)
+- Son reutilizables
+- Existen tres formas principales en Python:
+  + Mediante el operador =%=
+  + Usando lo función =format= de una cadena
+  + Usando =cadenas f=
+
+*** Operador =%=
+- Las sustituciones son posicionales
+- Es conveniente para pocas sustituciones
+- Si se sustituye más de un valor es necesario agregar =()= en la
+  sustitución
+
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    s = 'Pepe'
+    print('hola %s, cómo estas?' % s )
+
+    nombre = 'Juan'
+    edad = 15
+    print('Hola %s, tienes %s años' % (nombre, edad))
+
+    plantilla = 'Hola %s, tienes %s años'
+    print(plantilla % ('José', 16))
+    print(plantilla % ('Brenda', 21))
+
+  #+end_src
+
+  #+RESULTS:
+  : hola Pepe, cómo estas?
+  : Hola Juan, tienes 15 años
+  : Hola José, tienes 16 años
+  : Hola Brenda, tienes 21 años
