@@ -353,8 +353,8 @@
 #+end_src
 
 #+RESULTS:
-: 2024-02-18 13:49:39.301166
-: 2024-02-18 13:49:39.301218
+: 2024-02-27 09:24:49.005863
+: 2024-02-27 09:24:49.005893
 
 **** Buscar ayuda
 
@@ -375,7 +375,7 @@
 - También puedes visitar la documentación oficial:
   https://docs.python.org
 - Muchos IDEs incluyen la documentación oficial del lenguaje
-
+  
 **** Gestor de paquetes  
 - Python cuenta con su propio gestor de paquetes de terceros (=pip=), para que
   sea más fácil instalar correctamente los paquetes y que estén

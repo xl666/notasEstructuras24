@@ -167,7 +167,8 @@
   s = 'hola'
   print(len(s))
   b = s.encode('utf-8') # convertir a binario
-  print(b) # ver cadena binaria 
+  print(b) # ver cadena binaria
+  print(len(b))
   print(list(b)) # ver valores de bytes
   print(b.decode('utf-8')) # regresar a texto
 #+end_src      
@@ -175,6 +176,7 @@
 #+RESULTS:
 : 4
 : b'hola'
+: 4
 : [104, 111, 108, 97]
 : hola
 
@@ -283,6 +285,7 @@
   #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
     for caracter in 'hola':
         print(caracter)
+
   #+end_src
 
 #+RESULTS:
@@ -360,12 +363,51 @@
 : hola mundo
 
 *** strip
+- Quita caracteres de espaciadores a izquierda y derecha
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    s = '   hola    mundo    \n\n\n'.strip()
+    print(s)
+  #+end_src
+
+#+RESULTS:
+: hola    mundo
+
 
 *** split
+- Dada una cadena separadora, genera una lista de cadenas considerando
+  el separador
+
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    s = 'nombre,edad,carrera,matricula'
+    partes = s.split(',')
+    print(partes)
+
+    s = 'hola-->mundo'
+    print(s.split('-->'))
+  #+end_src
+
+  #+RESULTS:
+  : ['nombre', 'edad', 'carrera', 'matricula']
 
 *** startswith
+- Regresa verdadero si una cadena empieza con una subcadena
+
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    print('hola mundo'.startswith('hola'))
+  #+end_src
+
+#+RESULTS:
+: True
 
 *** endswith
+- Regresa verdadero si una cadena termina con cierta subcadena
+
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    print('hola mundo'.endswith('mundo'))
+  #+end_src
+
+#+RESULTS:
+: True
 
 *** join
 - Concatena cadenas en una lista de cadenas, usando la cadena actual
@@ -403,6 +445,7 @@ print(','.join(['hola', 'mundo', 'mundial']))
 - Son la forma principal de escribir mensajes largos que dependen de
   valores de expresiones (como variables)
 - Son reutilizables
+- Se basan en dejar espacios reemplazables, también llamados =place-holders=
 - Existen tres formas principales en Python:
   + Mediante el operador =%=
   + Usando lo función =format= de una cadena
@@ -413,6 +456,7 @@ print(','.join(['hola', 'mundo', 'mundial']))
 - Es conveniente para pocas sustituciones
 - Si se sustituye más de un valor es necesario agregar =()= en la
   sustitución
+- Hay varios tipos de =place-holders=, =%s= es el más general
 
   #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
     s = 'Pepe'
@@ -433,3 +477,33 @@ print(','.join(['hola', 'mundo', 'mundial']))
   : Hola Juan, tienes 15 años
   : Hola José, tienes 16 años
   : Hola Brenda, tienes 21 años
+
+*** =format=
+- Es una función de cadenas para crear plantillas
+- Utiliza =place-holders= nombrados
+- No es posicional como el operador =%=
+
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    plantilla = 'hola {nombre}'
+    print(plantilla.format(nombre='Pepe'))
+
+    plantilla = 'Hola {nombre}, tu edad es {edad}, adiós {nombre}'
+    print(plantilla.format(edad=18, nombre='Juanito'))
+  #+end_src
+
+  #+RESULTS:
+  : hola Pepe
+  : Hola Juanito, tu edad es 18, adiós Juanito
+
+*** =cadenas f=
+- No es exactamente para crear plantillas (dado que no son reutilizables)
+- Son una forma conveniente de remplazar un =place-holder= por una variable que ya se tiene
+- Se crean poniendo una =f= al inicio de la cadena
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    nombre = 'Pepe'
+    edad = 18
+    print(f'Hola {nombre}, tu edad es {edad}')
+  #+end_src
+
+#+RESULTS:
+: Hola Pepe, tu edad es 18
