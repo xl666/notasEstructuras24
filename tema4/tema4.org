@@ -1,0 +1,135 @@
+#+title: Tema 4: Objetos
+
+* Conceptos generales
+- Los objetos son el tipo de dato principal del paradigma de
+  programación orientado a objetos (POO)
+- En este curso no se verán muchos aspectos de este paradigma (para
+  eso está el curso de lenguajes y paradigmas de programación)
+- Sólo se abordaran objetos como estructura de datos
+- Se cubrirán los siguientes conceptos:
+  + Clases
+  + Objetos
+  + Propiedades
+  + Métodos
+
+* Clases
+- Son plantillas para crear objetos
+- Varios objetos pueden ser de la misma clase
+- Una clase define un tipo de dato
+- Python implementa sus tipos de datos mediante clases
+- Son elementos estáticos, esto es, no son =instancias= (no
+  están siendo administradas por el proceso)
+- Una práctica común es nombrar las clases con una mayúscula al
+  inicio, así se distinguen de otro tipo de identificadores (como
+  variables, constantes o nombres de funciones)
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    # forma
+  class Nombre_Clase():
+      # se necesita un método especial __init__
+      def __init__(self):
+          pass
+#+end_src
+- =self= es una referencia especial hacia el propio objeto (se verá
+  más adelante)
+
+* Objetos
+- Son =instancias= de una clase, administradas por el proceso
+- Esencialmente son contenedores de valores
+  (atributos/propiedades) y pueden tener un comportamiento (métodos)
+- Pueden cambiar de =estado=, esto es, sus propiedades pueden
+  cambiar de valor
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  class Ejemplo:
+      # se necesita un método especial __init__
+      def __init__(self):
+          pass
+
+
+  objeto1 = Ejemplo() # instanciación de clase
+  objeto2 = Ejemplo() # otro objeto de la misma clase
+  print(type(objeto1))
+#+end_src
+
+#+RESULTS:
+: <class '__main__.Ejemplo'>
+
+* Atributos
+- También se les puede llamar propiedades
+- Son similares a las variables, pero sólo existen dentro del
+  objeto
+- Se pueden crear desde el método especial =__init__=
+- Este método es el que se invoca implícitamente al crear el objeto (instanciarlo)
+- Para recuperar el valor de una propiedad a partir de un objeto, se
+  utiliza el operador =.=
+- Una práctica común es que los parámetros de =__init__= se
+.  correspondan en nombre con el de las propiedades
+- Dentro de la clase, para hacer referencia a una propiedad se utiliza
+  la referencia especial =self=
+  
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  class Persona():
+      def __init__(self, nombre, edad):
+          self.nombre = nombre # son variables diferentes
+          self.edad = edad
+
+  pepe = Persona('Pepe', 12) # se pasan los parámetros en el orden de __init__
+  brenda = Persona('Brenda', 20)
+  print(pepe.nombre)
+  print(brenda.edad)
+#+end_src  
+
+#+RESULTS:
+: Pepe
+: 20
+
+* Métodos
+- Son similares a las funciones, pero en el contexto de un objeto
+- Esto es, tienen acceso directo a las propiedades (a través de =self=)
+- En un método, el primer atributo debe ser la referencia especial
+  =self=, incluso si el método no recibe parámetros se debe poner
+- Al invocar el método desde un objeto, no se pone el =self= (va
+  implícito, es el propio objeto que invoca)
+- Existen métodos especiales que se pueden definir, por ejemplo para
+  establecer qué hacer con operadores com =+=, qué cadena regresar
+  cuando se pone el objeto en un =print=, o cómo determinar si dos
+  objetos son iguales o diferentes cuando se usan operadores de
+  igualdad, entre otros (no se entrará mucho en detalle pero se pueden
+  hacer varias cosas)
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  class Fraccion():
+      def __init__(self, numerador, denominador):
+          self.numerador = numerador
+          self.denominador = denominador
+
+      def sumar1(self):
+          self.numerador += 1
+
+      # función que se invoca al hacer print del objeto
+      def __repr__(self):
+          return '%s/%s' % (self.numerador, self.denominador)
+
+      # suma la fracción actual y otra y regresa la suma
+      def sumar_fracciones(self, otra_fraccion):
+          comun_denominador = self.denominador * otra_fraccion.denominador
+          nuevo_numerador = (self.numerador * otra_fraccion.denominador) + (otra_fraccion.numerador * self.denominador)
+          return Fraccion(nuevo_numerador, comun_denominador)
+
+  f1 = Fraccion(1, 2)
+  print(f1)
+  f1.sumar1()
+  print(f1)
+  f2 = Fraccion(1, 4)
+  print(f2)
+  nueva = f1.sumar_fracciones(f2)
+  print(nueva)
+#+end_src  
+
+#+RESULTS:
+: 1/2
+: 2/2
+: 1/4
+: 10/8

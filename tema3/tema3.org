@@ -372,7 +372,6 @@
 #+RESULTS:
 : hola    mundo
 
-
 *** split
 - Dada una cadena separadora, genera una lista de cadenas considerando
   el separador
