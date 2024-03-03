@@ -15,8 +15,9 @@
 * Clases
 - Son plantillas para crear objetos
 - Varios objetos pueden ser de la misma clase
-- Una clase define un tipo de dato
-- Python implementa sus tipos de datos mediante clases
+- Una clase define un tipo de dato, es la forma que tienen los programadores de crear sus propios tipos
+- Python implementa sus tipos de datos mediante clases (muchas cosas
+  en Python son objetos)
 - Son elementos estáticos, esto es, no son =instancias= (no
   están siendo administradas por el proceso)
 - Una práctica común es nombrar las clases con una mayúscula al
@@ -31,7 +32,7 @@
           pass
 #+end_src
 - =self= es una referencia especial hacia el propio objeto (se verá
-  más adelante)
+  más adelante junto con el método =__init__=)
 
 * Objetos
 - Son =instancias= de una clase, administradas por el proceso
@@ -67,6 +68,13 @@
 .  correspondan en nombre con el de las propiedades
 - Dentro de la clase, para hacer referencia a una propiedad se utiliza
   la referencia especial =self=
+- Al conjunto de valores de las propiedades de un objeto en un momento
+  dado se le llama =estado= del objeto
+- Notar que los objetos pueden ser estáticos/dinámicos o mutables/no
+  mutables dependiendo del tipo de sus propiedades
+- Dada su flexibilidad (y métodos especiales de python) los objetos
+  pueden comportarse como lineales, no lineales o jerárquicos
+  (dependiendo de lo que quiera el programador)
   
 
 #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
@@ -133,3 +141,65 @@
 : 2/2
 : 1/4
 : 10/8
+
+* Igualdad en objetos
+- Ten cuidado al comparar objetos de clases que creaste, puedes tener resultados inesperados
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  class Ejemplo():
+      def __init__(self, valor):
+          self.valor = valor
+
+  ob1 = Ejemplo(1)
+  ob2 = ob1
+  ob3 = Ejemplo(1)
+
+  print(ob1 == ob2)
+  print(ob1 == ob3)
+
+#+end_src  
+
+#+RESULTS:
+: True
+: False
+
+- Al comparar objetos entre si, y no haber implementado métodos especiales como =__eq__=, sólo se compara memoria, esto es, solo que sea el mismo objeto en memoria el resultado es verdadero
+- Normalmente los tipos de datos oficiales de Python, y de terceros toman esto en cuenta, por lo que no hay que preocuparse 
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  l1 = [1, 2, 3]
+  l2 = [1, 2, 3]
+
+  print(l1 == l2)
+
+  s1 = {5, 7, 7, 8, 5} # tipo set
+  s2 = {8, 7, 5}
+  print(s1 == s2)
+#+end_src  
+
+#+RESULTS:
+: True
+: True
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  class Ejemplo():
+      def __init__(self, valor):
+          self.valor = valor
+
+      def __eq__(self, otro_objeto):       
+          if not isinstance(otro_objeto, Ejemplo):
+              return False
+          return self.valor == otro_objeto.valor
+
+  ob1 = Ejemplo(1)
+  ob2 = ob1
+  ob3 = Ejemplo(1)
+
+  print(ob1 == ob2)
+  print(ob1 == ob3)
+
+#+end_src
+#+RESULTS:
+: True
+: True
+
+- La función =isinstance= recibe un objeto y una clase, determina si el objeto pertenece a la clase (es una instancia)
