@@ -1,0 +1,247 @@
+#+title: Tema 5: Listas
+
+* Fundamentos
+[[file:./list.png]]
+
+- Son estructuras de datos lineales, dinámicas y mutables
+- Su forma de uso es muy similar a los arreglos en lenguajes como =C=
+- En Python su forma literal es mediante corchetes =[]=
+- En general el acceso a elementos es secuencial y no aleatorio (como el de los arreglos), lo cual es ineficiente
+- Esto es así porque los elementos no están contiguos en memoria (en los arreglos si)
+- Para mitigar el problema anterior, Python tiene varias optimizaciones como utilizar memoria contigua en la medida de lo posible (aun así un arreglo siempre será más eficiente)
+- La eficiencia de las listas no es un tema del que preocuparse mucho
+  en Python, salvo que se tengan que manipular mucho datos (millones)
+** Tipos principales
+- Listas ligadas:
+  + Se componen de nodos, donde cada nodo tiene una referencia al nodo siguiente (como se vio en el ejercicio de clase)
+- Listas doblemente ligadas
+  + También se componen de nodos, pero cada nodo tiene una referencia al nodo siguiente y al anterior
+* Operaciones sobre listas
+- No se abordaran algunas cosas básicas ya vistas (recorrido de
+  listas, pertenencia a una lista mediante operador =in=)
+** Tipos de operaciones sobre datos
+- Entiéndase por operación una función o método
+- Lo que se analiza en este punto es un concepto general de
+  programación, no ligado específicamente a listas
+- Existen dos tipos principales de operaciones sobre una estructura de datos
+  + In-place:
+    * La operación modifica la estructura interna, esto es modifica memoria
+    * En un objeto, cambia el estado del objeto
+    * Son eficientes en memoria pero propensas a tener efectos
+      colaterales (un tema que se verá en segundo parcial)
+    * No regresan nada (son procedimientos)
+  + Inmutable
+    * No modifican la estructura interna
+    * En vez de modificar memoria existente, pueden generan nueva memoria (lo
+      cual puede ser ineficiente)
+    * Regresan algo (se comportan como funciones)
+** Longitud
+- Simplemente se usa =len= la cual funciona con varias estructuras de
+  datos de Python
+- Es una operación no mutable
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    l = [1, 2, 3]
+    print(len(l))
+  #+end_src
+
+#+RESULTS:
+: 3
+
+** Concatenación
+- Se refiere a unir listas entre si
+- Es una operación no mutable
+- Se logra mediante el operador =+=
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  l1 = [1, 2, 3]
+  l2 = [4, 5]
+  lres = l1 + l2
+  print(lres)
+#+end_src  
+
+#+RESULTS:
+: [1, 2, 3, 4, 5]
+
+** Agregar elementos
+- Son operaciones in-place
+*** Al inicio
+- Mediante el método =insert= de una lista
+- Este método permite insertar en cualquier posición
+- El primer parámetro es una posición y el segundo el elemento a insertar
+- Cuidado: =insert= permite posiciones inválidas (mayores a la
+  longitud o menores a 0)
+  
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    l = [2, 3, 4]
+    l.insert(0, 1)
+    print(l)
+  #+end_src
+
+  #+RESULTS:
+  : [1, 2, 3, 4]
+
+*** Al final
+- Usar método =append= de lista
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    l = [1, 2, 3]
+    l.append(4)
+    print(l)
+  #+end_src
+
+  #+RESULTS:
+  : [1, 2, 3, 4]
+
+*** En cualquier posición
+- Con el método =insert=
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    l = [1, 2, 4]
+    l.insert(2, 3)
+    print(l)
+  #+end_src
+
+  #+RESULTS:
+  : [1, 2, 3, 4]
+
+** Remplazar elementos
+- Se puede con asignación directa
+- Es una operación in-place
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  l = [0, 2, 3]
+  l[0] = 1
+  print(l)
+#+end_src
+
+#+RESULTS:
+: [1, 2, 3]
+  
+** Borrar elementos
+- Operación in-place
+- Se utiliza la función general =del= que funciona para varias
+  estructuras de datos de Python
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  l = [0, 1, 2, 3]
+  del(l[0])
+  print(l)
+#+end_src  
+
+#+RESULTS:
+: [1, 2, 3]
+
+** Obtener sublistas
+- Es una operación no mutable
+- Usando rebanadas (como se vio en el tema anterior)
+- Las rebanadas regresan nueva memoria (por eso son no mutables)
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  l = [1, 2, 3, 4]
+  print(l[:-1]) # todos menos último
+  print(l[1:]) # todos menos primero
+  print(l[1:-1]) # sin primero y último
+#+end_src  
+** Hacer una copia
+- Operación no mutable
+- Se puede mediante el método =copy= de listas o mediante rebanadas
+- CUIDADO: estos métodos hacen copias superficiales (shallow)
+- Esto es importante si los elementos de la lista son otras
+  estructuras de datos (como otras listas)
+- Si se quiere hacer copias profundas (deep) Python cuenta con un
+  módulo llamada =copy=
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  l = [1, 2, 3]
+  copia1 = l[:]
+  copia2 = l.copy()
+  copia1[0] = 11
+  copia2[0] = 22
+  print(l)
+  print(copia1) # Diferente a l
+  print(copia2)
+
+  l = [[1], [2]] # lista de listas
+  copia = l[:]
+  copia[0][0] = 66
+  print(l) # se alteró por copia superficial
+  print(copia)
+
+  import copy
+  copia_buena = copy.deepcopy(l)
+  copia_buena[0][0] = 99
+  print(l)
+  print(copia_buena)
+#+end_src  
+
+#+RESULTS:
+: [1, 2, 3]
+: [11, 2, 3]
+: [22, 2, 3]
+: [[66], [2]]
+: [[66], [2]]
+: [[66], [2]]
+: [[99], [2]]
+  
+** Ordenar listas
+- El ordenamiento es un tema extenso de las estructuras de datos,
+  considerándose como un problema computacional muy importante
+- Se refiere a ordenar, bajo algún criterio, los elementos de alguna
+  estructura de datos (tradicionalmente arreglos o listas)
+- Muchas operaciones críticas (por ejemplo selección de elementos en
+  bases de datos) dependen de que los algoritmos de ordenamiento sean
+  eficientes (tanto en memoria como en procesador)
+- Existen muchos algoritmos de ordenamiento, algunos ejemplos clásicos
+  son los siguientes (en este curso se verán algunos como parte de
+  temas o ejercicios) :
+  + Burbuja
+  + Inserción directa
+  + Quicksort
+  + Mergesort
+  + Heapsort
+  + Timsort (es el que usa Python)
+ 
+- Hay dos variantes principales de operaciones en Python:
+  + Método =sort= de lista: in-place
+  + Función =sorted=: no mutable, para diferentes estructuras de datos
+
+*** Orden ascendente
+
+- Por defecto estos métodos ordenan de forma ascendente (de menor a
+  mayor), de acuerdo a criterios de comparación entre objetos del
+  mismo tipo (Python define métodos especiales para comparación de
+  objetos, similar a =__eq__=)
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  l = [44, 11, 7, 22]
+  l2 = sorted(l)
+  l.sort()
+
+  print(l)
+  print(l2)
+#+end_src  
+
+#+RESULTS:
+: [7, 11, 22, 44]
+: [7, 11, 22, 44]
+  
+*** Orden descendente
+- Se logra con el parámetro nombrado (keyword) =reverse=
+- En un tema posterior del curso se hablará más a fondo de este tipo
+  de parámetros
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  l = [44, 11, 7, 22]
+  l2 = sorted(l, reverse=True)
+  l.sort(reverse=True)
+
+  print(l)
+  print(l2)
+#+end_src
+
+#+RESULTS:
+: [44, 22, 11, 7]
+: [44, 22, 11, 7]
+
+- Es posible ordenar de forma más arbitraria o para tipos de datos
+  creados por el programador, sin embargo, se requieren algunos
+  conocimientos que rebasan los alcances de este curso (en lenguajes y
+  paradigmas de programación se debería abordar)
+
+* Listas de varias dimensiones
+* Tuplas

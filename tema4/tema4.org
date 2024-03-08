@@ -84,14 +84,21 @@
           self.edad = edad
 
   pepe = Persona('Pepe', 12) # se pasan los parámetros en el orden de __init__
+  pepe.edad = 22
   brenda = Persona('Brenda', 20)
   print(pepe.nombre)
   print(brenda.edad)
+  print(pepe.edad)
+  print(type(pepe))
+  print(pepe)
 #+end_src  
 
 #+RESULTS:
 : Pepe
 : 20
+: 22
+: <class '__main__.Persona'>
+: <__main__.Persona object at 0x76fbdcd1c8d0>
 
 * Métodos
 - Son similares a las funciones, pero en el contexto de un objeto
@@ -107,7 +114,7 @@
   igualdad, entre otros (no se entrará mucho en detalle pero se pueden
   hacer varias cosas)
 
-#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/fraccion.py
   class Fraccion():
       def __init__(self, numerador, denominador):
           self.numerador = numerador
@@ -187,7 +194,7 @@
 
       def __eq__(self, otro_objeto):       
           if not isinstance(otro_objeto, Ejemplo):
-              return False
+              False
           return self.valor == otro_objeto.valor
 
   ob1 = Ejemplo(1)

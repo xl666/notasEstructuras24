@@ -342,7 +342,7 @@ Existen dos tipos de datos en los lenguajes de programación:
 - Árboles
 - Objetos
   
-  r[[file:./list.png]]
+  [[file:./list.png]]
   
 * Mutabilidad y no mutabilidad
 - Es una propiedad de las estructuras de datos que se refiere a si los valores de los elementos de la estructura pueden cambiar (mutable) o no (no mutable)
