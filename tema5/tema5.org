@@ -252,7 +252,51 @@
   paradigmas de programación se debería abordar)
 
 * Comprensión de listas
-- En inglés list comprhensions
+- En inglés list comprehensions
+- Son una forma de crear listas a partir de otras (es una operación inmutable)
+- La idea es generar esa nueva lista aplicando una transformación o
+  filtrado de los elementos de la lista original
+- Evita que se tengan que usar ciclos =for= en muchas ocasiones
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  # forma básica con sólo trasformaciones
+nueva = [trasformacion(elemento) for elemento in lista_original]
+#+end_src
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  original = ['hola', 'mundo']
+  mayusculas = [s.upper() for s in original]
+  print(mayusculas)
+#+end_src
+
+#+RESULTS:
+: ['HOLA', 'MUNDO']
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  # obtener sólo números pares
+  nums = [1, 2, 3, 4]
+  # lo que va después del if es una expresión booleana
+  pares = [num for num in nums if num % 2 == 0]
+  print(pares)
+#+end_src
+
+#+RESULTS:
+: [2, 4]
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  # Combinación con transformación y filtrado
+  # Quedarse sólo con directorios de una ruta
+  # Agregar la ruta como parte de la salida
+  import os
+  ruta = '/tmp'
+  dirs = ['%s/%s' % (ruta, elemento)
+          for elemento in os.listdir(ruta)
+          if os.path.isdir('%s/%s' % (ruta, elemento))]
+
+  print(dirs)
+#+end_src
+
+#+RESULTS:
+: ['/tmp/nuevoDir', '/tmp/otroDir']
 
 * Listas de varias dimensiones
 - También llamadas listas de listas, son listas donde los elementos son a su vez listas
@@ -342,3 +386,32 @@
 : 6
 
 * Tuplas
+- Son una estructura de datos similar a las listas (lineales) excepto
+  que son estáticas y no mutables
+- Su forma literal es mediante =()=
+- Si no se requiere cambiar elementos, es mejor utilizar tuplas en
+  lugar de listas
+- Tiene operaciones similares a las listas pero sólo inmutables
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  tupla = (1, 2, 3)
+  print(tupla[0])
+#+end_src
+
+#+RESULTS:
+: 1
+
+- Para que no haya ambigüedad, cuando la tupla tenga un elemento se
+  agrega una coma extra al final
+
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    tupla = (1)
+    print(type(tupla))
+
+    tupla = (1, )
+    print(type(tupla))
+  #+end_src
+
+#+RESULTS:
+: <class 'int'>
+: <class 'tuple'>
