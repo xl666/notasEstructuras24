@@ -15,11 +15,13 @@
 - Listas ligadas:
   + Se componen de nodos, donde cada nodo tiene una referencia al nodo siguiente (como se vio en el ejercicio de clase)
 - Listas doblemente ligadas
-  + También se componen de nodos, pero cada nodo tiene una referencia al nodo siguiente y al anterior
+  + También se componen de nodos, pero cada nodo tiene una referencia
+    al nodo siguiente y al anterior, también hay una referencia al
+    primer (cabeza) y último elemento (cola)
 * Operaciones sobre listas
 - No se abordaran algunas cosas básicas ya vistas (recorrido de
   listas, pertenencia a una lista mediante operador =in=)
-** Tipos de operaciones sobre datos
+** Tipos de operaciones sobre estructuras de datos datos
 - Entiéndase por operación una función o método
 - Lo que se analiza en este punto es un concepto general de
   programación, no ligado específicamente a listas
@@ -30,7 +32,7 @@
     * Son eficientes en memoria pero propensas a tener efectos
       colaterales (un tema que se verá en segundo parcial)
     * No regresan nada (son procedimientos)
-  + Inmutable
+  + Inmutable (no mutables)
     * No modifican la estructura interna
     * En vez de modificar memoria existente, pueden generan nueva memoria (lo
       cual puede ser ineficiente)
@@ -138,6 +140,12 @@
   print(l[1:]) # todos menos primero
   print(l[1:-1]) # sin primero y último
 #+end_src  
+
+#+RESULTS:
+: [1, 2, 3]
+: [2, 3, 4]
+: [2, 3]
+
 ** Hacer una copia
 - Operación no mutable
 - Se puede mediante el método =copy= de listas o mediante rebanadas
@@ -243,5 +251,94 @@
   conocimientos que rebasan los alcances de este curso (en lenguajes y
   paradigmas de programación se debería abordar)
 
+* Comprensión de listas
+- En inglés list comprhensions
+
 * Listas de varias dimensiones
+- También llamadas listas de listas, son listas donde los elementos son a su vez listas
+- Permiten definir estructuras muy útiles en cálculos matemáticos (álgebra lineal, graficación, etc.) como las matrices
+- En computación aparecen de forma recurrente en la manipulación de imágenes
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  l1 = [1, 2]
+  l2 = [3, 4]
+  ll = [l1, l2]
+  print(ll)
+  print(ll[0])
+  print(ll[1][0])
+#+end_src
+
+#+RESULTS:
+: [[1, 2], [3, 4]]
+: [1, 2]
+: 3
+
+** Matrices, cubos e hipercubos
+- Son listas de listas donde el número de elementos en las sublistas coincide
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  matriz = [[1, 2, 3], [3, 4, 5]] # sublistas de 3 elementos
+  no_matriz = [[1], [3, 4], [5, 6]]
+
+#+end_src
+
+- Cada nivel que se agrega se le llama "dimensión", las matrices son de 2 dimensiones, los cubos de 3 y los hipercubos de más de 3
+- Para simplificar, en este curso sólo se verá cómo procesar matrices
+- Las matrices tienen filas y columnas
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    matrix = [
+        [0, 64, 128, 192, 255], # fila 0
+        [0, 64, 128, 192, 255], 
+        [0, 64, 128, 192, 255],
+        [0, 64, 128, 192, 255],
+        [0, 64, 128, 192, 255]
+    ]
+
+    # recuperar elemento en fila 2 columna 3
+    print(matrix[2][3])
+  #+end_src
+
+#+RESULTS:
+: 192
+
+*** Recorrer una matriz
+- Se requieren dos ciclos (for o while) uno anidado dentro del otro
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  matriz = [
+      [1, 2, 3],
+      [4, 5, 6]
+  ]
+
+  for fila in matriz:
+      for celda in fila:
+          print(celda)
+#+end_src
+
+#+RESULTS:
+: 1
+: 2
+: 3
+: 4
+: 5
+: 6
+
+- Al estilo =C=
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    matriz = [
+        [1, 2, 3],
+        [4, 5, 6]
+    ]
+
+    for fila in range(len(matriz)):
+        for columna in range(len(matriz[fila])):
+            print(matriz[fila][columna])
+  #+end_src
+
+#+RESULTS:
+: 1
+: 2
+: 3
+: 4
+: 5
+: 6
+
 * Tuplas
