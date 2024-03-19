@@ -1,0 +1,114 @@
+#+title: Tema 6: Pilas
+
+* Fundamentos
+- Las pilas son una estructura de datos similar a las listas
+- Son estructuras lineales (aunque no indexables),
+   dinámicas pero  no mutables
+- A diferencia de una lista, el acceso a elementos está restringido, sólo se puede tener acceso a un elemento a la vez (el tope de la pila)
+- En esta estructura, el último elemento que se agrega es el primero que puede salir 
+- Es una estructura LIFO (last-in-First-out)
+- En computación las pilas se utilizan para muchas cosas:
+  + Analizadores sintácticos en compiladores
+  + Orden de llamadas a funciones (se verá más al respecto en el tema de recursividad)
+  + Evaluación de expresiones 
+  + Operaciones de undo/redo (deshacer/rehacer)
+  + Historial de navegación
+
+- Esta estructura tiene tres operaciones básicas:
+  + Push: agrega un elemento al tope
+  + Pop: saca y regresa el elemento al tope
+  + Peek: sólo regresa el valor del elemento del tope sin sacarlo
+
+    [[file:./stack.png]]
+
+* Implementación
+- Python no define esta estructura en su biblioteca estándar
+- Sin embargo es fácil de simular usando una lista
+- Incluso el API de lista tiene métodos de pilas
+
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    pila = []
+    pila.append(1) # equivalente de push
+    pila.append(2)
+    pila.append(3)
+
+    tope = pila[-1] # equivalente de peek
+    print(tope)
+
+    tope = pila.pop()
+    print(tope)
+    print(pila)
+
+  #+end_src
+
+  #+RESULTS:
+  : 3
+  : 3
+  : [1, 2]
+  
+* Implementación con clases
+- Para tener las funcionalidades con las restricciones establecidas
+
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+
+    class Pila():
+        def __init__(self):
+            self.interna = []
+
+        def push(self, valor):
+            self.interna.append(valor)
+
+        def pop(self):
+            if not self.interna:
+                return None
+            return self.interna.pop()
+
+        def peek(self):
+            if not self.interna:
+                return None
+            return self.interna[-1]
+
+        def __repr__(self):
+            return str(self.interna)
+
+    pila = Pila()
+    pila.push(1)
+    pila.push(2)
+    pila.push(3)
+    print(pila)
+    tope = pila.peek()
+    print(tope)
+    tope = pila.pop()
+    print(tope)
+    print(pila)
+
+  #+end_src
+
+  #+RESULTS:
+  : [1, 2, 3]
+  : 3
+  : 3
+  : [1, 2]
+
+*   Ejemplos
+- Las pilas facilitan hacer cosas en orden inverso
+- Por ejemplo, obtener una cadena al revés:
+
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+
+    def voltear(cadena):
+        pila = Pila()
+        for c in cadena:
+            pila.push(c)
+        inversa = ''
+        while pila.peek(): # si está vacía peek regresa None
+            inversa += pila.pop()
+        return inversa
+
+    s = voltear('hola mundo')
+    print(s)
+
+  #+end_src
+
+  #+RESULTS:
+  : odnum aloh
