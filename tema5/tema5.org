@@ -392,14 +392,19 @@ nueva = [trasformacion(elemento) for elemento in lista_original]
 - Si no se requiere cambiar elementos, es mejor utilizar tuplas en
   lugar de listas
 - Tiene operaciones similares a las listas pero sólo inmutables
+- Con la función =tuple= se puede convertir a tupla (con ciertos tipos
+  de datos)
 
 #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
   tupla = (1, 2, 3)
   print(tupla[0])
+
+  print(tuple('hola'))
 #+end_src
 
 #+RESULTS:
 : 1
+: ('h', 'o', 'l', 'a')
 
 - Para que no haya ambigüedad, cuando la tupla tenga un elemento se
   agrega una coma extra al final
