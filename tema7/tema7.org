@@ -1,0 +1,98 @@
+#+title: Tema  7: Colas
+
+* Fundamentos
+- Las colas son estructuras de datos similares a las pilas
+- Al igual que las pilas son estructuras lineales con acceso restringido
+- A diferencia de las pilas, son estructuras FIFO (first-in-first-out)
+- Esto quiere decir que el primer elemento que entra es el primero en
+  salir (como en las colas que haces para hacer trámites)
+- Los elementos se agregan al final de la cola y se sacan al inicio de
+  ésta 
+- Al inicio de la cola se le llama "frente" o "cabeza"
+- Al último elemento se le llama "final"
+
+- En computación se utilizan para muchas tareas:
+  + Colas de impresión
+  + Colas de procesos, para calendarización de procesos
+  + Colas de mensajes para comunicación entre procesos
+  + Atención de clientes en servidor web
+
+* Operaciones básicas
+- append: agrega un elemento al final (igual que en una lista)
+- shift: saca el elemento del frente y lo regresa
+- peek: sólo regresa el valor del elemento del frente sin sacarlo
+
+* Implementación
+- Se puede simular con listas
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+
+    cola = []
+    cola.append(1) # agregar al final
+    cola.append(3)
+    cola.append(2)
+
+    primero = cola[0] # peek
+    cola = cola[1:] # se tienen que hacer dos operaciones para shift
+
+
+  #+end_src
+
+** Implementación con objetos
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+
+  class Cola():
+      def __init__(self):
+          self.interna = []
+
+      def esta_vacia(self):
+          return not self.interna
+
+      def append(self, valor):
+          self.interna.append(valor)
+
+      def shift(self):
+          if self.esta_vacia():
+              return None
+          val = self.interna[0]
+          self.interna = self.interna[1:]
+          return val
+
+      def peek(self):
+          if self.esta_vacia():
+              return None
+          return self.interna[0]
+
+      def __repr__(self):
+          return str(self.interna)
+
+      def copiar(self):
+          nueva_cola = Cola()
+          for elemento in self.interna:
+              nueva_cola.append(elemento)
+          return nueva_cola
+
+
+  cola = Cola()
+  cola.append(1)
+  cola.append(2)
+  cola.append(3)
+  print(cola)
+
+  val = cola.shift()
+  print(val)
+  print(cola)
+
+  print(cola.peek())
+
+  otra = cola.copiar()
+  print(otra)
+#+end_src
+
+#+RESULTS:
+: [1, 2, 3]
+: 1
+: [2, 3]
+: 2
+: [2, 3]
+
