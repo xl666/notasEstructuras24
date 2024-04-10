@@ -1,0 +1,199 @@
+#+title: Tema 8: Conceptos avanzados sobre funciones
+
+* Ámbito de identificadores (scope)
+- Un identificador es cualquier cosa que el programador pueda nombrar
+  en el programa: variables, nombres de funciones, nombres de clases, etc.
+- El ámbito o scope se refiere al área del programa donde se puede
+  tener acceso a un identificador
+- Por ejemplo, si defines una variable dentro de una función, no
+  puedes tener acceso a dicha variable fuera de dicha función
+
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    def mi_fun():
+        x = 'hola' # definida en el ámbito de la función
+        return x
+
+    print(x) # error, no está definida la variable en este ámbito
+  #+end_src
+
+- Los ámbitos se anidan, esto es, están dentro de otros, si un
+  identificador no se encuentra en el ámbito actual, se busca en el
+  siguiente nivel de ámbito.
+
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    variable = 3 # ámbito global
+
+    def fun():
+        return variable + 4 # se busca en global
+
+    print(fun())
+  #+end_src
+
+#+RESULTS:
+: 7
+
+- Si dos identificadores se llaman igual pero se encuentran en
+  diferente ámbito, entonces se toma el identificador más cercano al
+  ámbito activo
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+
+  variable = 'hola '
+
+  def saludar(nombre):
+      variable = 'adios '
+      return variable + nombre
+
+  print(saludar('pepe'))
+  print(variable)
+#+end_src  
+
+#+RESULTS:
+: adios pepe
+: hola
+
+- Cuidado: en =Python= si defines dos identificadores en el mismo
+  nivel de ámbito que se llaman igual,
+  se hará una =sobre-escritura=, quedándose sólo la última
+  definición
+- En otros lenguajes como =Java= podría generarse un error en casos similares
+
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+
+    def hola():
+        print('hola')
+
+    def hola():
+        print('adios')
+
+    hola()    
+  #+end_src
+
+  #+RESULTS:
+  : adios
+
+** Tipos de ámbito
+*** Global
+- Es el ámbito más general, en =Python= puede identificarse fácilmente
+  al ver que no hay identación
+- El ámbito se crea cuando inicia el programa
+- Este ámbito muere hasta que termina el programa
+- CUIDADO: es una mala práctica bien conocida el usar variables
+  globales, estás pueden ser la fuente de errores por efectos
+  colaterales (explicado más adelante)
+- En este ámbito sólo debería haber definiciones de funciones, clases
+  y constantes (como las variables pero no cambian de valor)
+*** Función/método
+- Son los identificadores que se crean dentro del cuerpo de una
+  función o método
+- Esto incluye a los parámetros de la función
+- Se crea un ámbito de este tipo por cada invocación a función/método
+- El ámbito muere cuando la función/método termina
+- Visualmente son los identificadores que están definidos dentro del cuerpo de
+  la función/método
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+
+  def externa():
+      def interna(): # función dentro de función
+          return 1
+      return interna() # se puede hacer la referencia
+
+  print(externa()) # sin errores
+  print(interna()) # error, no está definida en ámbito global
+#+end_src
+
+*** Clase/objeto
+- Se crea un ámbito de este tipo cada vez que se crea un objeto
+- El ámbito muere cuando el objeto pierde todas sus referencias (ver
+  subtema de recolección de basura)
+- Visualmente son los identificadores definidos dentro del cuerpo de
+  una clase
+- =Python= realmente no tiene este ámbito, como si lo tienen lenguajes
+  como =Java=, por eso requiere del uso explícito de =self= para hacer
+  referencia al ámbito del objeto
+
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+
+    class Prueba():
+        def __init__(self, propiedad):
+            self.propiedad = propiedad # ámbitos diferentes
+
+        def metodo(self):
+            print(propiedad) # error no existe
+            print(self.propiedad) # OK
+  #+end_src
+
+*** Bloque
+- Es un tipo de ámbito que se crea cuando hay sentencias de bloque
+  (como las sentencias de control)
+- El ámbito muere cuando termina el bloque
+- =Python= no tiene este tipo de ámbito, aunque hay lenguajes como
+  =Java= que si lo tienen
+
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+
+    if True:
+        variable = 6 # se definió en global
+
+    print(variable) # no hay problema 
+  #+end_src
+
+  #+RESULTS:
+  : 6
+
+** Recolección de basura
+- Cuando el ámbito de un identificador desaparece, también desaparecen
+  sus identificadores asociados 
+- Considera que en el caso de las variables, éstas realmente son
+  referencias a posiciones en memoria
+- Puede haber varias referencias a la misma memoria
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  l1 = [1, 2, 3]
+  l2 = l1 # es la misma memoria
+  l2[0] = 99
+  print(l1[0]) 
+#+end_src  
+
+#+RESULTS:
+: 99
+
+- Cuando un  ámbito termina, es posible que desaparezcan referencias a
+  datos en memoria
+- Si un dato en memoria no tiene referencias vivas (en ámbitos
+  activos) entonces esa memoria es propensa a ser reciclada
+- Al proceso de reciclado se le conoce como =recolección de basura=
+- El recolector de basura es un proceso especial del intérprete que se
+  encarga de reciclar memoria que ya no tiene referencias vivas, y que
+  por lo tanto no puede ser recuperada
+- Muchos lenguajes tienen recolectores de basura: =Java=, =Python=,
+  =Java Script=, =C#=, entre otros.
+- Mientras que en otros lenguajes como =C= y =C++= la liberación de
+  memoria es un proceso manual que le corresponde al programador, lo cual tiene
+  ventajas y desventajas
+
+* Paso de parámetros a funciones
+
+** Paso por valor
+
+** Paso por referencia
+
+* Efectos colaterales 
+
+* Tipos de parámetros en las funciones
+
+** Posicionales  
+
+** Opcionales 
+
+** Keyword (nombrados)
+
+** Variables 
+
+* Sobrecarga de funciones
+
+
+* Documentar funciones y módulos
+
+** Anotaciones de tipos
