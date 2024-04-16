@@ -87,6 +87,9 @@
 
   otra = cola.copiar()
   print(otra)
+  otra.shift()
+  print(cola)
+  print(otra)
 #+end_src
 
 #+RESULTS:
@@ -94,5 +97,6 @@
 : 1
 : [2, 3]
 : 2
+: [2, 3]
 : [2, 3]
 

@@ -13,7 +13,8 @@
         x = 'hola' # definida en el ámbito de la función
         return x
 
-    print(x) # error, no está definida la variable en este ámbito
+   mi_fun()
+   print(x) # error, no está definida la variable en este ámbito
   #+end_src
 
 - Los ámbitos se anidan, esto es, están dentro de otros, si un
@@ -38,7 +39,7 @@
 
 #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
 
-  variable = 'hola '
+  variable = 'hola ' # ámbito global
 
   def saludar(nombre):
       variable = 'adios '
@@ -96,6 +97,7 @@
 
   def externa():
       def interna(): # función dentro de función
+          var = 3
           return 1
       return interna() # se puede hacer la referencia
 
@@ -224,7 +226,7 @@
 #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
   def sumatoria(lista):
       res = 0
-      while lista:
+      while lista: 
           res += lista.pop() # se va destruyendo la lista, efecto colateral
       return res
 
@@ -242,7 +244,7 @@
 
 #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
   def sumatoria(lista):
-      lista = lista[:] # copia
+      lista = lista.copy() # copia
       res = 0
       while lista:
           res += lista.pop() # se va destruyendo la copia
@@ -282,11 +284,13 @@
 - Al declarar la función, deben de ir después de los parámetros posicionales obligatorios, de lo contrario se confundiría el intérprete
 
 #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
-  def fun(normal, opcional=0):
-      return normal + opcional
+  def fun(normal, opcional=0, op2=1):
+      return normal + opcional + op2
+
 
   print(fun(3)) # ne se pasó segundo param, valor 0 por defecto
   print(fun(3, 4)) # aquí si se pasó, se considera valor pasado
+  print(fun(3, 1, 2))
 #+end_src  
 
 #+RESULTS:
@@ -320,7 +324,9 @@
 - Son un tipo especial de parámetro que representa un número variable de parámetros
 - Permiten que una función pueda recibir cualquier número de parámetros sin importar cómo fue definida
 - Al definir la función, cualquier argumento que inicie con =*= se considera variable
-- Sólo puede haber uno de estos y debe ir al final de la lista de parámetros (o puede ser casi al final como se menciona más adelante)
+- Sólo puede haber uno de estos y debe ir al final de la lista de
+  parámetros (o puede ser casi al final como se menciona más adelante)
+  a menos que tengas parámetros nombrados
 - Todos los parámetros extra que pases se van a ir a una tupla
 
 #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
@@ -345,7 +351,7 @@
 #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
   def fun(param1, op1=0, *resto):
       print(resto)
-
+f
   fun(1) # Al menos se tiene que pasar un param
   fun(1, 2)
   fun(1, 2, 3)
@@ -433,7 +439,7 @@
   def sumar(val):
       return val + 1
 
-  def sumar(val1, val2):
+  def sumar(val1, val2=0):
       return val1 + val2
 
   print(sumar(1)) # error, se esperaban dos parámetros
