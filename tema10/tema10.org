@@ -1,0 +1,81 @@
+#+title: Tema 10: Recursividad
+
+* Introducción
+- La recursividad es una forma declarativa para definir procesos que
+  se repiten
+- Tienen definición formal en matemáticas (explicado más adelante)
+- En este sentido son similares a los ciclos de control imperativo como =for= y =while=
+- A diferencia de las secuencias de control tradicionales, la recursividad aplica a nivel de funciones
+- Se habla entonces de funciones recursivas (o no recursivas que son las que se han trabajado hasta ahora)
+- Cualquier cosa que se pueda hacer con =for= o =while= puede
+  lograrse con funciones recursivas
+- Pero no todo lo que se puede hacer con recursividad se puede hacer con =for= y =while=, lo que lo vuelve una forma de repetición más general (y poderosa)
+- En términos simples una función recursiva es aquella que se define en términos de ella misma, esto es, en algún punto de  su propio cuerpo se manda a llamar a si misma (también puede ser de forma indirecta como se menciona más adelante)
+- A muchos programadores se les dificulta el uso de recursividad, incluso a programadores profesionales
+- Esto se debe a su naturaleza declarativa, siendo que la programación se enseña normalmente de forma imperativa
+- En términos generales puede verse a la recursividad como una técnica de programación que permite resolver problemas que de otra forma resultan muy difíciles o imposibles de resolver con las estructuras de control tradicionales (se verán ejemplos concretos de esto en el tema de árboles)
+
+ 
+** Programación imperativa
+- Se refiere a darle a la computadora paso por paso las instrucciones que debe ejecutar
+- Es trabajo del programador dar todos los detalles del control del programa
+- Esto es, el programador debe definir =cómo= resolver el problema
+
+** Programación declarativa
+- El programador se preocupa principalmente por definir el problema
+- Esto es, el programador define =qué= es el problema
+- Existe un mecanismo de resolución automático que recibe definiciones de problemas y genera soluciones
+- Este mecanismo puede ser por ejemplo un motor de resolución lógica (usado en programación lógica)
+- Todos los sistemas operativos tienen un motor implícito de resolución de problemas recursivos, éste funciona a través de la pila de memoria del proceso (se explica más adelante)
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  # versión imperativa
+  def fibonacci(numero):
+      if numero < 3:
+          return 1
+      anterior = 1
+      actual = 1
+      for _ in range(numero - 2):
+          aux = actual
+          actual = anterior + actual
+          anterior = aux
+
+      return actual
+
+  print(fibonacci(10))
+#+end_src
+
+#+RESULTS:
+: 55
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  # versión declarativa
+
+  def fibonacci(numero):
+      if numero < 3:
+          return 1
+      return fibonacci(numero - 2) + fibonacci(numero - 1)
+
+  print(fibonacci(10))
+#+end_src
+
+#+RESULTS:
+: 55
+
+- En un curso posterior (lenguajes y paradigmas de programación) se discute el tema de programación declarativa más a fondo
+
+* Espacios de memoria de un proceso
+
+* Manejo de llamadas de un proceso
+
+** Desbordamiento de pila
+
+* Funciones recursivas
+
+** Recursividad directa
+
+** Recursividad indirecta
+
+* Recursividad a la cola 
+
+* Recursividad no a la cola

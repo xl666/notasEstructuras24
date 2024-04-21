@@ -26,6 +26,7 @@ arreglo)
   print(diccionario['llave1']) # recuperar
 
   diccionario['llave3'] = 'valor3' # establecer
+  diccionario['llave1'] = 22 # mutable
   print(diccionario['llave3'])
 #+end_src  
 
@@ -180,6 +181,19 @@ arreglo)
 : llave a, valor 1
 : llave b, valor 2
 : llave c, valor 3
+
+*** Determinar si una llave pertenece al diccionario
+- Se puede usar el operador =in=
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+
+  d = {'a': 1, 'b': 2, 'c': 3}
+  llave = 'b'
+  print(llave in d.keys())
+#+end_src  
+
+#+RESULTS:
+: True
 
 *** Borrar un par llave-valor
 - Se puede como en otros casos con la función =del=
