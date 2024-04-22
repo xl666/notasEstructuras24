@@ -9,7 +9,8 @@
 - Se habla entonces de funciones recursivas (o no recursivas que son las que se han trabajado hasta ahora)
 - Cualquier cosa que se pueda hacer con =for= o =while= puede
   lograrse con funciones recursivas
-- Pero no todo lo que se puede hacer con recursividad se puede hacer con =for= y =while=, lo que lo vuelve una forma de repetición más general (y poderosa)
+- Pero no todo lo que se puede hacer con recursividad se puede hacer
+  con =for= y =while= (o resulta demasiado complejo), lo que lo vuelve una forma de repetición más general (y poderosa)
 - En términos simples una función recursiva es aquella que se define en términos de ella misma, esto es, en algún punto de  su propio cuerpo se manda a llamar a si misma (también puede ser de forma indirecta como se menciona más adelante)
 - A muchos programadores se les dificulta el uso de recursividad, incluso a programadores profesionales
 - Esto se debe a su naturaleza declarativa, siendo que la programación se enseña normalmente de forma imperativa
@@ -62,13 +63,86 @@
 #+RESULTS:
 : 55
 
+- Las soluciones declarativas suelen ser más cortas y elegantes que
+  las imperativas, pero suelen resultar más abstractas y difíciles de
+  entender (sobre todo si no estás acostumbrado)
 - En un curso posterior (lenguajes y paradigmas de programación) se discute el tema de programación declarativa más a fondo
 
-* Espacios de memoria de un proceso
+* Manejo de memoria 
+** Memoria RAM
+- La memoria RAM es una memoria de acceso rápido (a diferencia del disco duro)
+- Básicamente se utiliza para tener acceso a los datos de los
+  programas que se encuentran en ejecución (llamados procesos)
+- Todo programa en ejecución está cargado en la RAM (al menos parcialmente si no hay suficiente memoria)
+- La memoria RAM puede verse como una matriz de celdas, cada celda guarda un byte
+- Cada celda tiene una dirección de memoria definida lo que permite
+  que el acceso a la celda sea aleatorio (no es necesario recorrer otras celdas para encontrar la celda de interés)
 
-* Manejo de llamadas de un proceso
+** Espacios de memoria de un proceso
+- Al ejecutarse un proceso, el sistema operativo reserva espacio en
+  memoria para guardar los datos del proceso
+- Lo procesos tienen 4 áreas de memoria principales (puede variar
+  entre sistema operativos):
+  + Call stack (pila de llamadas)
+  + Heap
+  + Datos (global)
+  + Código
 
-** Desbordamiento de pila
+*** Call stack
+- También llamado simplemente =stack=
+- Es una zona de memoria que se comporta como una pila
+- Su función principal es recordar el orden en que se hacen llamadas
+  anidadas entre
+  funciones
+- También en varias lenguajes (aunque no es el caso de Python) es en
+  esta zona donde se guardan por defecto las estructuras de datos
+  creadas dentro de un función 
+- En esta memoria también se propagan los valores de retorno entre
+  funciones
+- Si un proceso excede su tamaño de pila asignado, se produce un error
+  de =desbordamiento de pila= o =stack overflow=
+- Esto puede suceder si se anidan demasiadas llamadas de funciones
+  (varios miles)
+- Un desbordamiento de pila provoca la terminación del proceso
+- El programador no puede afectar directamente al Call Stack, los
+  datos de esta zona se crean y destruyen automáticamente (lo hace el
+  sistema operativo)
+- Esta zona de memoria es la que permite que exista recursividad
+  (explicado más adelante)
+
+*** Heap
+- Es un área especial del proceso designada para el uso de los
+  programadores
+- En algunos lenguajes como =C=, el programador puede reservar y
+  borrar memoria en esta área
+- El sistema operativo no limpia esta memoria (como si lo hace con
+  el stack)
+- En lenguajes de más alto nivel como =Python= el programador no toma
+  decisiones sobre dónde colocar datos, se utiliza la opción más
+  robusta de forma transparente
+- Por ejemplo, en =Python= al crear una lista dentro de una función,
+  se usa automáticamente el heap, de esta forma si la función regresa
+  una referencia a la lista, no se corre el riesgo de que la memoria
+  asociada a la lista sea limpiada de forma automática al terminar la
+  función (como si pasaría si se guardara en el stack)
+- Como se mencionó en temas anteriores, en lenguajes como =Python= se
+  utiliza un recolector de basura para limpiar memoria que no se
+  utiliza
+- Más concretamente la limpieza se hace sobre el heap (dado que de por
+  si el stack se limpia solo)
+
+*** Datos
+- Es un espacio especial para almacenar variables globales y
+constantes
+- Es un espacio fijo que se designa en tiempo de compilación (en
+  lenguajes compilados)
+
+*** Código
+- En este espacio se almacena el código del programa asociado al proceso
+- De esta forma se puede llevar un control para que el procesador sepa que instrucción debe ejecutar a continuación
+- Es importante recordar en qué punto se encuentra la ejecución dado
+  que los procesos entran y salen constantemente del procesador (el
+  calendarizador del SO se encarga de esta función)
 
 * Funciones recursivas
 
