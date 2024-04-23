@@ -146,6 +146,71 @@ constantes
 
 * Funciones recursivas
 
+- Como ya se mencionó, una función recursiva es aquella que se define
+  en términos de ella misma
+- Un ejemplo común es la función factorial (determina número de permutaciones de una colección)
+
+  [[file:./factorial.png]]
+
+- Las funciones recursivas tienen casos =base= y casos =recursivos=
+- Un caso base es una entrada de la función para la cual se puede entregar directamente un valor
+- Un caso recursivo es aquel que hace referencia a la propia función (hace una llamada a la propia función)
+- Por ejemplo, la función factorial tiene un caso base y un caso recursivo
+- Aunque dependiendo del problema puede haber varios casos base y recursivos
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+
+  def factorial(numero):
+      if numero == 0:
+          return 1
+      return numero * factorial(numero - 1)
+
+  print(factorial(6))
+#+end_src
+
+#+RESULTS:
+: 720
+
+** Cómo funcionan las funciones recursivas
+- Cada vez que se hace una llamada recursiva se apila la llamada en el stack, quedando pendiente la finalización de la función
+- Al alcanzar un caso base se empieza a desapilar propagando resultados en la pila
+- Dado que se trabaja con una pila (como se vio en el tema de pilas) las cosas suceden en el orden inverso después de la llamada recursiva
+- Por ejemplo, una forma sencilla de imprimir del 5 al 1
+
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+
+    def imprimir_inverso(n, maximo):
+        if n <= maximo: # caso base implícito 
+            imprimir_inverso(n + 1, maximo) # primero la llamada recursiva
+            print(n)
+
+    imprimir_inverso(1, 5)        
+  #+end_src
+
+#+RESULTS:
+: 5
+: 4
+: 3
+: 2
+: 1
+
+
+** Diseño de soluciones recursivas
+- Un error que cometen muchos programadores al crear funciones recursivas es pensar constantemente en lo que pasa en el stack
+- NO hagas eso: es importante saber cómo funcionan las llamadas recursivas, pero pensar en ello aumenta la carga cognitiva y la complejidad
+- En vez de eso debes pensar en los casos, esto es programación declarativa, no hay que pensar en el proceso detallado, sólo en definir el problema
+- El manejo de la pila de llamadas es tu mecanismo de resolución automático, no es necesario pensar en cómo funciona
+
+*** Consejos  
+- Empieza por los casos base, ¿En qué casos puedo regresar un resultado directamente?
+- Luego piensa en los casos recursivos, ¿Qué debo hacer cuando no se puede resolver el caso, cómo debería tratarse?
+- Considera que los parámetros que recibe tu función son muy importantes, hay que pensar muy bien en ellos
+- En los casos recursivos los parámetros que pasas deberían variar de cierta forma, piensa bien en cuál es esa forma
+- Si estás procesando listas, en cada llamada evalúa el elemento del frente y pasa el resto de la lista en los casos recursivos
+- Muchas veces es mejor definir dos funciones: una recursiva y otra no recursiva que sólo manda a llamar a la función recursiva.
+- La función recursiva puede requerir que se inicialicen parámetros de forma especial, cosa que se hace desde la función no recursiva
+- También puede aprovecharse la función no recursiva para copiar memoria si es que la función recursiva modifica memoria 
+
 ** Recursividad directa
 
 ** Recursividad indirecta
