@@ -4,8 +4,8 @@
 - La recursividad es una forma declarativa para definir procesos que
   se repiten
 - Tienen definición formal en matemáticas (explicado más adelante)
-- En este sentido son similares a los ciclos de control imperativo como =for= y =while=
-- A diferencia de las secuencias de control tradicionales, la recursividad aplica a nivel de funciones
+- En este sentido es similar a los ciclos de control imperativo como =for= y =while=
+- A diferencia de las sentencias de control tradicionales, la recursividad aplica a nivel de funciones
 - Se habla entonces de funciones recursivas (o no recursivas que son las que se han trabajado hasta ahora)
 - Cualquier cosa que se pueda hacer con =for= o =while= puede
   lograrse con funciones recursivas
@@ -181,7 +181,7 @@ constantes
 
     def imprimir_inverso(n, maximo):
         if n <= maximo: # caso base implícito 
-            imprimir_inverso(n + 1, maximo) # primero la llamada recursiva
+            imprimir_inverso(n + 1 , maximo) # primero la llamada recursiva
             print(n)
 
     imprimir_inverso(1, 5)        
@@ -193,6 +193,8 @@ constantes
 : 3
 : 2
 : 1
+
+
 
 
 ** Diseño de soluciones recursivas
@@ -212,9 +214,84 @@ constantes
 - También puede aprovecharse la función no recursiva para copiar memoria si es que la función recursiva modifica memoria 
 
 ** Recursividad directa
+- Es la forma que se ha visto hasta el momento en el tema
+- Se refiere a que en el cuerpo de la función se mande a llamar a la propia función 
 
 ** Recursividad indirecta
+- Sucede cuando entre dos o más funciones se hacen llamadas entre si
+- Es menos común y útil que la recursividad directa
 
-* Recursividad a la cola 
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  def a(i):
+      if i == 0:
+          return True
+      return b(i-1)
 
-* Recursividad no a la cola
+  def b(i):
+      return a(i)
+    
+#+end_src  
+
+* Estilos de recursividad 
+- Al diseñar soluciones recursivas existen dos patrones de solución:
+  + A la cola
+  + No a la cola
+    
+** Recursividad a la cola 
+- En general es el estilo más declarativo, por lo tanto suele dar soluciones cortas
+- Se basa en dejar trabajo pendiente (en cola de espera, aunque en realidad sabemos que se usa una pila)
+- Esto es, se hacen llamadas recursivas y luego se continúa con el código
+- Este estilo no suele requerir agregar parámetros extra a la solución, por lo que tampoco es en muchas ocasiones necesario agregar una función no recursiva que inicialice los parámetros de la función recursiva
+- Es ineficiente en memoria y procesador dado que requiere de apilar más trabajo
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+def mayor_lista(lista):
+    if not lista:
+        return -1
+    frente = lista[0]
+    resto = lista[1:]
+    if not resto: # la lista tenía un solo elemento
+        return frente
+    mayor_resto = mayor_lista(resto) # trabajo pendiente adelante
+    if frente > mayor_resto:
+        return frente
+    else:
+        return mayor_resto
+#+end_src
+
+** Recursividad no a la cola
+- En cierto sentido es similar a un for y while
+- Lo último que se hace en en los casos recursivos es la llamada recursiva, esto es, no deja trabajo pendiente
+- Normalmente requiere de agregar parámetros extra de control, por ejemplo índices o acumuladores de resultados
+- En algunos lenguajes de programación, aunque no es el caso de =Python=, como =Common Lisp= este tipo de recursividad no apila llamadas en la pila (se saca de la pila la función que está terminando, por lo que no puede caer en un stack overflow)
+- En esos lenguajes la recursividad no a la cola es muy similar en términos de eficiencia a un for o while tradicional
+- En general es más eficiente que la recursividad a la cola 
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    def mayor_rec(lista: list, mayor: int) -> int:
+        """
+        Regresa el número mayor, requiere inicialización.
+
+        returns: int 
+        """
+        if not lista: # lista vacía
+            return mayor # mayor es un acumulador 
+        frente = lista.pop()
+        if frente > mayor:
+            return mayor_rec(lista, frente) # es lo último que se hace
+        return mayor_rec(lista, mayor) # es lo último que se hace
+
+    # se requiere de una segunda función de inicialización
+    def mayor_lista(lista: list) -> int:
+        """
+        Regresa el mayor de la lista.
+
+        lista: list
+        returns: int 
+        """
+        lista = lista[:]
+        if not lista:
+            return -1
+        mayor = lista.pop()
+        return mayor_rec(lista, mayor)
+#+end_src  
