@@ -1,0 +1,70 @@
+#+title: Tema 11: Árboles
+
+* Introducción
+- En teorı́a de grafos un árbol es un grafo acı́clico dirigido donde
+  cada nodo tiene un sólo nodo como padre (exceptuando el nodo raı́z que no tiene padre)
+- Un nodo puede tener cualquier número de descendientes
+- Al primer nodo del árbol se le llama raı́z (root)
+- A través de la raı́z se puede acceder a cualquier elemento
+- Si un nodo no tiene descendientes se le llama hoja (leaf)
+
+- Dos nodos con el mismo padre se les llama hermanos (siblings)m  
+- Un árbol es una estructura recursiva, cada nodo del árbol es a su
+vez un árbol
+
+[[file:./arbol1.png]]
+
+** Aplicaciones
+- Algunos ejemplos de aplicaciones:
+  + En compiladores (árbol sintáctico)
+  + En minerı́a de datos (árboles de decisión)
+  + En juegos (alfa-beta)
+  + Para búsqueda y ordenación de datos
+  + El sistema de archivos se estructura como un árbol
+  + DOM HTML/XML: la estructura de formatos de etiquetas sigue una
+    estructura de árbol
+
+* Tipos
+- En este curso se verán dos tipos de árboles:
+  - Árboles generales
+  - Árboles binarios de búsqueda
+** Árboles generales
+- Cada nodo puede tener cualquier número de hijos
+- No cumplen ninguna propiedad en especial
+  
+** Árboles binarios de búsqueda
+- Cada nodo puede tener a lo mucho dos hijos
+- Están pensados para indexación rápida de datos
+- Por ejemplo, se utilizan en bases de datos para recuperar de forma eficiente registros
+- Tienen restricciones:
+  + Cada nodo tiene un índice numérico
+    + El hijo del lado izquierdo tiene un valor de índice menor al padre
+    + El hijo del lado derecho tiene un valor de índice mayor al padre
+
+[[file:./arbol2.png]]
+
+
+* Implementación
+** Árbol general
+- Python no cuenta en su  biblioteca estándar con esta estructura de datos
+- Se verá una implementación basada en objetos
+- La implementación se divide en dos clases:
+  + Una clase que represente cualquier nodo del árbol
+    * Se tiene una propiedad con los nodos hijos
+  + Una clase que representa al árbol en si
+    * Se tendrá una propiedad con una referencia al nodo raíz
+- Durante el tema se realizará una implementación gradual en clase
+
+*** Operaciones
+- Crear árbol (constructor)
+- Agregar hijo
+- Es hoja
+- Recuperar padre
+- Imprimir árbol
+- Borrar hijo (podar)
+
+** Árbol binario de búsqueda
+
+* Recorridos
+** Primero en profundidad 
+** Primero en amplitud 
