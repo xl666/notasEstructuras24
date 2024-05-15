@@ -1,12 +1,12 @@
 #+title: Tema 11: Árboles
 
 * Introducción
-- En teorı́a de grafos un árbol es un grafo acı́clico dirigido donde
+- En teoría de grafos un árbol es un grafo acı́clico dirigido donde
   cada nodo tiene un sólo nodo como padre (exceptuando el nodo raı́z que no tiene padre)
 - Un nodo puede tener cualquier número de descendientes
 - Al primer nodo del árbol se le llama raı́z (root)
 - A través de la raı́z se puede acceder a cualquier elemento
-- Si un nodo no tiene descendientes se le llama hoja (leaf)
+- Si un nodo no tiene descendientes se le llama hoja (leaf, leaves)
 
 - Dos nodos con el mismo padre se les llama hermanos (siblings)m  
 - Un árbol es una estructura recursiva, cada nodo del árbol es a su
@@ -60,11 +60,38 @@ vez un árbol
 - Agregar hijo
 - Es hoja
 - Recuperar padre
+  + Realiza una modificación a la clase =Nodo= para que esta operación
+    sea sencilla
 - Imprimir árbol
+  + Se requiere hacer recorridos de árbol
+  + Primero en profundidad
+    * Recorres siempre primero a la izquierda, hasta llegar a una hoja
+    * Al llegar a una hoja regresar un paso, ir a la derecha y
+      continuar por la izquierda
+    * El control se puede hacer mediante una pila (con solo
+      recursividad se puede)
+  + Primero en amplitud
+    - Se recorre el árbol por niveles
+    - Hasta terminar de recorrer un nivel se va al siguiente
+    - Requiere de una cola para llevar el control
+    - Usa mucha más memoria que primero en profundidad 
 - Borrar hijo (podar)
-
 ** Árbol binario de búsqueda
+*** Implementación
+- Se implementará mediante dos clases:
+  + Nodo
+    * 4 propiedades:
+      - nodo izquierda
+      - nodo derecha
+      - índice
+      - valor: es lo que se quiere guardar en si, opcional
+  + ArbolBinario
+    * Sólo se requiere como propiedad la raíz
+    
+**** Operaciones de árbol
+- Crear árbol
+- Agregar nodo
+- Recuperar valor
+- Imprimir árbol
+- Borrar nodo
 
-* Recorridos
-** Primero en profundidad 
-** Primero en amplitud 

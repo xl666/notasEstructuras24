@@ -261,7 +261,7 @@ def mayor_lista(lista):
 
 ** Recursividad no a la cola
 - En cierto sentido es similar a un for y while
-- Lo último que se hace en en los casos recursivos es la llamada recursiva, esto es, no deja trabajo pendiente
+- Lo último que se hace en los casos recursivos es la llamada recursiva, esto es, no deja trabajo pendiente
 - Normalmente requiere de agregar parámetros extra de control, por ejemplo índices o acumuladores de resultados
 - En algunos lenguajes de programación, aunque no es el caso de =Python=, como =Common Lisp= este tipo de recursividad no apila llamadas en la pila (se saca de la pila la función que está terminando, por lo que no puede caer en un stack overflow)
 - En esos lenguajes la recursividad no a la cola es muy similar en términos de eficiencia a un for o while tradicional
