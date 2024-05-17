@@ -1,0 +1,123 @@
+#+title: Tema 12: Procesamiento de archivos
+
+* Introducción
+- Los archivos son una forma de almacenar información
+- El sistema operativo se encarga de gestionarlos mediante el sistema de archivos
+- Hay dos tipos principales de archivos (aunque existen más tipos dependiendo del SO):
+  + Directorios: Son una forma de agrupar archivos 
+  + Archivos normales: pueden ser de dos tipos:
+    * Texto: requieren de alguna codificación especial como utf-8, sirven para almacenar texto plano
+    * Binarios: cualquier archivo que no sea de texto es binario, sirven para cualquier propósito (música, vídeo, juegos, etc.)
+
+** Rutas de archivo
+- En el sistema todos los archivos se almacenan en alguna ruta lógica
+- Esa ruta depende de una estructura de árbol
+- El sistema de archivos se estructura mediante un árbol, donde cada directorio representa un nodo
+- En un sistema tipo Unix (como Linux, MacOS y BSD) el directorio raíz es simplemente =/=
+- En sistemas windows cada dispositivo de almacenamiento se identifica con una letra (como C) y tiene su propio árbol de directorios
+- En sistemas tipo Unix cada subdirectorio de la ruta se separa mediante una =/=, por ejemplo:
+  #+begin_src bash :session *bash* :results output :exports both :tangle /tmp/test.sh
+  /home/xl666/oneDrive/Dropbox/clases/estructurasCiber/notas/notasEstructuras24/tema12/tema12.org
+  #+end_src
+- En sistemas windows se puede usar =/= o =\= para separar cada subdirectorio
+- En la parte final de la ruta puede venir el nombre de un archivo normal
+
+  
+  
+* Procesamiento de archivos de texto
+- =Python= cuenta con un API muy simple y útil para el procesamiento de archivos
+- Se verán las siguientes operaciones comunes con archivos:
+  + Abrir un archivo existente para lectura
+  + Volcar contenido completo de un archivo de lectura
+  + Recorrer línea por línea un archivo de lectura
+  + Cerrar archivos
+  + Abrir un archivo existente o nuevo para escritura
+  + Abrir un archivo existente para escribir al final
+  + Volcar buffer de escritura
+
+** Abrir un archivo existente para lectura
+- Para abrir archivos se utiliza la función =open=
+- A esta función se le pasan principalmente dos parámetros:
+  + Ruta del archivo
+  + Modo de uso del archivo: si es de texto, binario, lectura,
+    escritura o append (se verán todos más adelante)
+- La función regresa un objeto especial que representa al archivo y permite manipularlo
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  archivo = open('/tmp/nuevo.txt', 'tr')
+  # t quiere decir modo texto
+  # r quiere decir modo lectura (read)
+
+  # por defecto, open usa modo tr, así que no es necesario ponerlo
+  # la siguiente línea es equivalente
+  archivo = open('/tmp/nuevo.txt')
+#+end_src
+
+** Volcar contenido completo de un archivo de lectura
+- Una vez se abrió el archivo en modo lectura se puede leer todo el contenido y pasarse a cadena mediante el método =read=del objeto archivo
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  archivo = open('/tmp/nuevo.txt')
+  contenido = archivo.read()
+  archivo.close() # cerrar, explicado más adelante
+#+end_src  
+- CUIDADO: sólo se debe usar esta operación si el archivo no es demasiado grande (cabe en RAM) de lo contrario es muy ineficiente
+- Se verá a continuación una forma alterna de leer el contenido del archivo sin cargarlo por completo a RAM
+  
+** Recorrer línea por línea un archivo de lectura
+- Mediante =for= es posible recorrer un archivo de texto línea por línea
+- Es una forma muy común y conveniente en =Python=
+- Evita que se cargue todo el contenido en RAM, en cambio se procesa línea por línea
+- A este tipo de procesamiento se le conoce en programación como =perezoso= o =lazy=, se verá más sobre esto es un curso posterior de programación
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  for linea in open('nuevo.txt'):
+      print(linea)
+  
+#+end_src  
+- Una ventaja extra de usar =for= de esta forma, es que no es necesario cerrar el archivo, se cierra automáticamente al terminar el =for=
+
+** Cerrar archivos
+- Cuando se abre un archivo se asocia un recurso al proceso que abre el archivo
+- A este recurso se le conoce como =descriptor de archivo=
+- Cada proceso tiene un número finito de =descriptores de archivos=
+- Si un proceso se excede en este número, al querer abrir un nuevo archivo habrá una excepción
+- Es buena práctica, para evitar este problema, cerrar el archivo siempre que se termine de usarlo
+- Esto se logra directamente con el método =close= como se vio antes
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    ar = open('nuevo.txt')
+    contenido = ar.read()
+    ar.close()
+  #+end_src
+
+- También se puede lograr de forma indirecta usando un =for= como se explicó antes, o mediante la sentencia especial =with=
+- =with= permite crear un contexto especial de ejecución, en el caso de archivos, permite que se cierren de forma robusta al terminar el bloque =with=
+- En general se recomienda usar =with= siempre que se pueda
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    with open('nuevo.txt') as archivo:
+        contenido = archivo.read()
+
+    # al terminar el bloque se cierra el archivo automáticamente
+  #+end_src
+** Abrir un archivo existente o nuevo para escritura
+- Hay que tener cuidado con esta operación
+- Si la ruta de archivo que se proporciona a =open= no existe, entonces se crea un archivo nuevo (siempre y cuando los subdirectorios de la ruta si existan)
+- Si la ruta es de un archivo existente, éste será sobre escrito, esto es, se perderá su contenido original
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  archivo = open('/tmp/nuevo.txt', 'tw')
+  # equivalente, la t está por defecto:
+  archivo = open('/tmp/nuevo.txt', 'w')
+
+  # para escribir, tener cuidado si se quieren saltos de línea:
+  archivo.write('cadena a agregar\n')
+  archivo.write('otra línea\n')
+  arhivo.close()
+
+
+#+end_src
+
+
+** Ejercicios sugeridos
+- Hacer un script que recibe un archivo de texto todo en minúsculas y genera un nuevo archivo de texto con todas las cadenas en mayúsculas
+- Hacer un script que recibe un archivo =passwd= con información de usuarios de un sistema tipo =Linux= y determina qué usuarios son los que pueden iniciar sesión en el sistema (explicado en clase)
