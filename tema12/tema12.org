@@ -22,7 +22,15 @@
 - En sistemas windows se puede usar =/= o =\= para separar cada subdirectorio
 - En la parte final de la ruta puede venir el nombre de un archivo normal
 
-  
+*** Rutas absolutas
+- Si la ruta se da desde la raíz
+
+*** Rutas relativas
+- No empieza con diagonal
+- Es relativa al directorio de trabajo actual
+- Rutas especiales relativas:
+  + . referencia a la ruta actual
+  + .. referencia al directorio padre        
   
 * Procesamiento de archivos de texto
 - =Python= cuenta con un API muy simple y útil para el procesamiento de archivos
@@ -54,7 +62,11 @@
 #+end_src
 
 ** Volcar contenido completo de un archivo de lectura
-- Una vez se abrió el archivo en modo lectura se puede leer todo el contenido y pasarse a cadena mediante el método =read=del objeto archivo
+- Una vez se abrió el archivo en modo lectura se puede leer todo el
+  contenido y pasarse a cadena mediante el método =read= del objeto archivo
+- Una vez se lee el contenido completo, no se puede volver a leer a
+  menos que regreses explícitamente  al principio del archivo
+  (operación seek)
 
 #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
   archivo = open('/tmp/nuevo.txt')
@@ -91,9 +103,16 @@
   #+end_src
 
 - También se puede lograr de forma indirecta usando un =for= como se explicó antes, o mediante la sentencia especial =with=
-- =with= permite crear un contexto especial de ejecución, en el caso de archivos, permite que se cierren de forma robusta al terminar el bloque =with=
+- =with= permite crear un contexto especial de ejecución, en el caso de archivos, permite que se cierren de forma robusta (aunque haya errores) al terminar el bloque =with=
 - En general se recomienda usar =with= siempre que se pueda
   #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    # equivalente
+    archivo = open('nuevo.txt')
+    contenido = archivo.read()
+    archivo.close()
+
+    # mejor
+
     with open('nuevo.txt') as archivo:
         contenido = archivo.read()
 
@@ -117,7 +136,167 @@
 
 #+end_src
 
+** Abrir un archivo existente para escribir al final
+- Como ya se mencionó, al utilizar la configuración 'w' de =open= se sobreescribe en el archivo si es que existe
+- Para evitar esto, se puede usar la configuración 'a' para activar el modo =append=, en este modo no se sobreescribe el archivo, sino que se escribe al final de éste
+- Si el archivo no existe se crea al igual que con 'w'
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+
+  with open('/tmp/nuevo.txt', 'a') as archivo:
+      archivo.write('nueva linea') # se agrega al final
+#+end_src  
+
+**   Volcar buffer de escritura
+- Cuando se escribe en un archivo, el contenido no se va directamente a disco, se escribe temporalmente en un buffer de memoria
+- Este es un mecanismo tradicional para limitar el acceso a disco, ya que es ineficiente (sobre todo en comparación al acceso a memoria)
+- Hasta que el buffer no se llena no se pasa el contenido a disco
+- Esto quiere decir que puedes estar escribiendo en tu archivo y no ver cambios en él al abrirlo
+- Si quieres volcar el contenido a disco directamente se puede de dos formas:
+  + Cierra el archivo (con =close= por ejemplo)
+  + Utiliza el método =flush=
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  with open('/tmp/nuevo.txt', 'w') as archivo:
+      archivo.write('hola')
+      archivo.flush() # se va a disco
+      archivo.write('otra cosa')
+
+  # al terminar el bloque with se cierra el archivo y se vuelca el buffer    
+#+end_src    
 
 ** Ejercicios sugeridos
 - Hacer un script que recibe un archivo de texto todo en minúsculas y genera un nuevo archivo de texto con todas las cadenas en mayúsculas
 - Hacer un script que recibe un archivo =passwd= con información de usuarios de un sistema tipo =Linux= y determina qué usuarios son los que pueden iniciar sesión en el sistema (explicado en clase)
+
+
+* Procesamiento de archivos binarios
+- El procesamiento de archivos binarios es más complejo que el de texto
+- Es necesario primero familiarizarse con cadenas binarias
+- Las cadenas binarias son similares a las cadenas de texto, incluso comparten un API similar
+- =Python= facilita mucho el manejo de binario gracias a la noción de cadenas binarias (en muchos otros lenguajes suele ser más complejo)
+- Un cadena binaria esencialmente contiene una serie de bytes
+- El byte es la unidad mínima que procesa la computadora (no se procesan bits individuales)
+- En =Python= una cadena binaria literal empieza con la letra =b=
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  binario = b'hola mundo'
+  print(type(binario))
+  # mostrar bytes internos
+  print(list(binario))
+#+end_src  
+
+#+RESULTS:
+: <class 'bytes'>
+: [104, 111, 108, 97, 32, 109, 117, 110, 100, 111]
+
+- =Python= hace su mejor esfuerzo para tratar de imprimir como texto una cadena binaria, pero si no puede muestra símbolos especiales llamados =code points=
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  import os
+
+  cadena = b'hola'
+  # cadena aleatoria de bytes
+  aleatoria = os.urandom(12)
+  print(type(aleatoria))
+  print(aleatoria)
+  # bytes internos
+  print(list(aleatoria))
+
+#+end_src  
+
+- Cualquier archivo se puede tratar como binario, incluso los archivos de texto (internamente todo es binario)
+- Se verá cómo realizar las siguientes operaciones con archivos
+  binarios:
+  + Abrir archivo binario
+  + Leer un archivo binario
+  + Escribir en archivo binario
+
+** Abrir archivo binario
+- Se utiliza la configuración 'b'
+- También es obligatorio establecer el modo (r, w, a)
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  ar = open('nuevo.bin', 'rb')
+  ar.close()
+#+end_src  
+
+** Leer archivo binario
+- Es un poco diferente a como se leen archivos de texto
+*** Leer todo el contenido de golpe
+- Igual que con archivos de texto, se utiliza el método =read=
+- Hay que tener la misma precaución de que el archivo no sea demasiado grande
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  with open('archivo.bin', 'rb') ar archivo:
+      contenido = archivo.read()
+#+end_src  
+
+*** Leer por pedazos
+- A los pedazos se les llama =chunks=
+- Se refiere a leer por bloques de bytes
+- =read= puede recibir como primer parámetro el número de bytes que se quiere leer
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  with open('archivo.bin', 'rb') as archivo:
+      pedazo = archivo.read(100) # leer 100 bytes
+      otro = archivo.read(100) # leer los siguientes 100 bytes
+#+end_src  
+  
+- Se puede mandar a llamar a =read= varias veces hasta finalizar la lectura del archivo
+- Cada vez que se llama a =read= se lee el siguiente pedazo del archivo
+- Si quedan menos bytes en el archivo de lo que se pasa en =read= se lee hasta donde es posible, sin generar errores
+- Si se trata de leer un archivo que ya ha sido terminado de leer, simplemente se regresa cadena binaria vacía =b''= y no se generan errores
+- La cadena binaria vacía es una forma de saber que ya se terminó de leer el archivo
+- Por ejemplo, se puede leer la totalidad del archivo de la siguiente manera con un =while=
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  with open('archivo.bin', 'rb') as archivo:
+      chunk = archivo.read(1024):
+      contenido = chunk
+      while chunk:
+          chunk = archivo.read(1024)
+          contenido += chunk
+  print(contenido) # todo el contenido del archivo
+#+end_src  
+
+*** Leer con un for
+- Se comporta similar a un archivo de texto
+- La diferencia es que no se lee línea por línea, sino chunk por chunk
+- Osea que se hace básicamente lo mismo que pasando el parámetro de tamaño de chunk a =read=
+- El tamaño del chunk está determinado por aspectos del SO
+- Se puede saber el tamaño del chunk de la siguiente manera
+  #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+    import io
+    print(io.DEFAULT_BUFFER_SIZE)
+  #+end_src
+
+#+RESULTS:
+: 8192
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+
+  contenido = b''
+  for chunk in open('archivo.bin', 'rb'):
+      contenido += chunk
+
+  print(contenido)    
+#+end_src
+
+** Escribir en archivo binario
+- Básicamente igual que la escritura en archivos de texto, sólo que se escriben cadenas binarias
+- Se puede usar el modo ='w'= o el modo ='a'= como se explicó antes
+- Por ejemplo, para crear un archivo binario aleatorio:
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+  import os
+
+  with open('/tmp/archivo.bin', 'wb') as archivo:
+      for _ in range(100): # 100 cadenas aleatorias
+          chunk = os.urandom(10)
+          archivo.write(chunk)
+#+end_src  
+
+** Ejercicios sugeridos
+- Oculta una imagen en un archivo pdf (estenografía)
+- Recupera la imagen a partir del archivo alterado
