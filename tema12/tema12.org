@@ -213,7 +213,7 @@
   + Escribir en archivo binario
 
 ** Abrir archivo binario
-- Se utiliza la configuración 'b'
+- Se utiliza la configuración 'b' de =open=
 - También es obligatorio establecer el modo (r, w, a)
 
 #+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
@@ -231,6 +231,14 @@
   with open('archivo.bin', 'rb') ar archivo:
       contenido = archivo.read()
 #+end_src  
+
+**** Determinar tamaño de archivo
+- Se puede hacer mediante =os.path.getsize=
+
+#+begin_src python :session *py* :results output :exports both :tangle /tmp/test.py
+print(os.path.getsize('tema12.org'))
+#+end_src  
+
 
 *** Leer por pedazos
 - A los pedazos se les llama =chunks=
@@ -283,6 +291,8 @@
   print(contenido)    
 #+end_src
 
+- Notar que al usar =for= se cierra automáticamente el archivo
+
 ** Escribir en archivo binario
 - Básicamente igual que la escritura en archivos de texto, sólo que se escriben cadenas binarias
 - Se puede usar el modo ='w'= o el modo ='a'= como se explicó antes
@@ -296,6 +306,8 @@
           chunk = os.urandom(10)
           archivo.write(chunk)
 #+end_src  
+
+#+RESULTS:
 
 ** Ejercicios sugeridos
 - Oculta una imagen en un archivo pdf (estenografía)
